@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AA85304F-E706-4310-A5F6-9FFB4D064718}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CK.Releaser</RootNamespace>
+    <AssemblyName>CKReleaser</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>f67c0b99</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\SharedKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CK.Core, Version=3.0.30.0, Culture=neutral, PublicKeyToken=731c291b31fb8d27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CK.Core.3.0.30\lib\net45\CK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CK.Monitoring, Version=3.0.30.0, Culture=neutral, PublicKeyToken=731c291b31fb8d27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CK.Monitoring.3.0.30\lib\net45\CK.Monitoring.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GUI\GUIUtil.cs" />
+    <Compile Include="InteractiveReleaseStatus.cs" />
+    <Compile Include="GUIDevContext.cs" />
+    <Compile Include="GUI\ActivityMonitorListItemClient.cs" />
+    <Compile Include="GUI\Prompt.cs" />
+    <Compile Include="GUI\PromptDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\TabControlWithClosingBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\VersionEditorPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\VersionEditorPanel.Designer.cs">
+      <DependentUpon>VersionEditorPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IInteractiveDevContext.cs" />
+    <Compile Include="MainWindowHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MainWindowHeader.Designer.cs">
+      <DependentUpon>MainWindowHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EmbeddedDoc\EmbeddedDoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\EmbeddedDoc\EmbeddedDoc.Designer.cs">
+      <DependentUpon>EmbeddedDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Home\FixWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pages\Home\FixWindow.Designer.cs">
+      <DependentUpon>FixWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Home\HomePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Home\HomePage.Designer.cs">
+      <DependentUpon>HomePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\HeaderUpdate\HeaderUpdatePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\HeaderUpdate\HeaderUpdatePage.Designer.cs">
+      <DependentUpon>HeaderUpdatePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ConfigurePackaging\PackagingPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\ConfigurePackaging\PackagingPage.Designer.cs">
+      <DependentUpon>PackagingPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\BaseReleaseDataEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\BaseReleaseDataEditor.Designer.cs">
+      <DependentUpon>BaseReleaseDataEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\InfoReleaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\InfoReleaseControl.Designer.cs">
+      <DependentUpon>InfoReleaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\BranchControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\BranchControl.Designer.cs">
+      <DependentUpon>BranchControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\LaunchReleasePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\LaunchReleasePanel.Designer.cs">
+      <DependentUpon>LaunchReleasePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\PageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\ReleaseInfoDatabaseFinder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\ReleaseInfoDatabaseFinder.Designer.cs">
+      <DependentUpon>ReleaseInfoDatabaseFinder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Signing\ClickOnceApplicationsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Signing\ClickOnceApplicationsPage.Designer.cs">
+      <DependentUpon>ClickOnceApplicationsPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Signing\DisplayStrongNameKey.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pages\Signing\DisplayStrongNameKey.Designer.cs">
+      <DependentUpon>DisplayStrongNameKey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Packaging\PackagingPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Packaging\PackagingPage.Designer.cs">
+      <DependentUpon>PackagingPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pages\Signing\StrongNameAndSignPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Signing\StrongNameAndSignPage.Designer.cs">
+      <DependentUpon>StrongNameAndSignPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Tests\NUnitPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Tests\NUnitPage.Designer.cs">
+      <DependentUpon>NUnitPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\InfoReleasePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\InfoRelease\InfoReleasePage.Designer.cs">
+      <DependentUpon>InfoReleasePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ReleaserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RefreshErrorsEventArgs.cs" />
+    <Compile Include="SimpleModeVersionSetterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SimpleModeVersionSetterForm.Designer.cs">
+      <DependentUpon>SimpleModeVersionSetterForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Prompt.resx">
+      <DependentUpon>Prompt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\PromptDlg.resx">
+      <DependentUpon>PromptDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\VersionEditorPanel.resx">
+      <DependentUpon>VersionEditorPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\EmbeddedDoc\EmbeddedDoc.resx">
+      <DependentUpon>EmbeddedDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\HeaderUpdate\HeaderUpdatePage.resx">
+      <DependentUpon>HeaderUpdatePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindowHeader.resx">
+      <DependentUpon>MainWindowHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Home\FixWindow.resx">
+      <DependentUpon>FixWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Home\HomePage.resx">
+      <DependentUpon>HomePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\InfoRelease\BaseReleaseDataEditor.resx">
+      <DependentUpon>BaseReleaseDataEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\InfoRelease\InfoReleaseControl.resx">
+      <DependentUpon>InfoReleaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\InfoRelease\BranchControl.resx">
+      <DependentUpon>BranchControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\InfoRelease\LaunchReleasePanel.resx">
+      <DependentUpon>LaunchReleasePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\InfoRelease\ReleaseInfoDatabaseFinder.resx">
+      <DependentUpon>ReleaseInfoDatabaseFinder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Signing\ClickOnceApplicationsPage.resx">
+      <DependentUpon>ClickOnceApplicationsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Signing\DisplayStrongNameKey.resx">
+      <DependentUpon>DisplayStrongNameKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\InfoRelease\InfoReleasePage.resx">
+      <DependentUpon>InfoReleasePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Pages\Signing\StrongNameAndSignPage.resx">
+      <DependentUpon>StrongNameAndSignPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Tests\NUnitPage.resx">
+      <DependentUpon>NUnitPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SimpleModeVersionSetterForm.resx">
+      <DependentUpon>SimpleModeVersionSetterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CK.Releaser\CK.Releaser.csproj">
+      <Project>{6464e791-1ea0-438e-a8c1-0108b31ea163}</Project>
+      <Name>CK.Releaser</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+    <Content Include="GUI\Res\Error.png" />
+    <Content Include="GUI\Res\Fatal.png" />
+    <Content Include="GUI\Res\Folder.png" />
+    <Content Include="GUI\Res\Info.png" />
+    <Content Include="GUI\Res\LockClosed.png" />
+    <Content Include="GUI\Res\LockOpened.png" />
+    <Content Include="GUI\Res\Trace.png" />
+    <Content Include="GUI\Res\Warning.png" />
+    <EmbeddedResource Include="Pages\EmbeddedDoc\EmbeddedDoc.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del "$(SolutionDir)packages\CK-Releaser-Auto\*.*" /S /Q /F
+xcopy  /s /i "$(TargetDir)*.*" "$(SolutionDir)packages\CK-Releaser-Auto\bin"
+xcopy /s /y /d /i "$(SolutionDir)packages\LibGit2Sharp.0.18.1.0\lib\net40\NativeBinaries\*.*" "$(TargetDir)NativeBinaries"
+</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Fody.1.24.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.24.0\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.24.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Fody.1.24.0\build\Fody.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

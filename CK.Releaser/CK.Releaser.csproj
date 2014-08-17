@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6464E791-1EA0-438E-A8C1-0108B31EA163}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CK.Releaser</RootNamespace>
+    <AssemblyName>CK.Releaser</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>73206b4f</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\SharedKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="DevContextReleaseStatus.cs" />
+    <Compile Include="Fixes\EnsureStandardPublishUrl.cs" />
+    <Compile Include="Fixes\CorrectMajorMinorPatchVersion.cs" />
+    <Compile Include="Fixes\EnsureReleaseFolder.cs" />
+    <Compile Include="Fixes\RemoveUselessFileVersionAttribute.cs" />
+    <Compile Include="Model\ModelExtension.cs" />
+    <Compile Include="Model\VersionFileManager.cs" />
+    <Compile Include="Signing\ClickOnceSigner.cs" />
+    <Compile Include="Tools\ToolPathFinder.cs" />
+    <Compile Include="Tools\VersionUtil.cs" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CK.Core, Version=3.0.30.0, Culture=neutral, PublicKeyToken=731c291b31fb8d27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CK.Core.3.0.30\lib\net45\CK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="LibGit2Sharp">
+      <HintPath>..\packages\LibGit2Sharp.0.18.1.0\lib\net40\LibGit2Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DevContext.cs" />
+    <Compile Include="Fixes\AssemblyReferencesMustBeSigned.cs" />
+    <Compile Include="Fixes\EnsureFileHasVersionAttributes.cs" />
+    <Compile Include="Fixes\SharedAssemblyInfoMustBeReferenced.cs" />
+    <Compile Include="Fixes\AssemblyMustBeSigned.cs" />
+    <Compile Include="Fixes\AssemblyNameMustMatchProjectName.cs" />
+    <Compile Include="Fixes\AssemblyNameAndFolderMustMatchProjectName.cs" />
+    <Compile Include="Fixes\EnsureStandardSharedVersionInfo.cs" />
+    <Compile Include="Fixes\EnsureStandardSharedKey.cs" />
+    <Compile Include="Fixes\FixProjectBase.cs" />
+    <Compile Include="IDevContext.cs" />
+    <Compile Include="Info\InfoRelease.XContent.cs" />
+    <Compile Include="Info\InfoRelease.cs" />
+    <Compile Include="Info\InfoRelease.Data.cs" />
+    <Compile Include="Info\InfoReleaseDatabase.cs" />
+    <Compile Include="Info\InfoReleaseDatabase.Creation.cs" />
+    <Compile Include="Model\CKMP.cs" />
+    <Compile Include="Model\CSProjectObject.cs" />
+    <Compile Include="Model\CSProjectReference.cs" />
+    <Compile Include="Model\ExeAndDllFiles.cs" />
+    <Compile Include="Model\FileSystemChangeManager.cs" />
+    <Compile Include="Model\FixBase.cs" />
+    <Compile Include="Model\FixContext.cs" />
+    <Compile Include="Info\WorkingFolder.cs" />
+    <Compile Include="Info\BranchRelease.cs" />
+    <Compile Include="Signing\UnsigneAssembliesSigner.cs" />
+    <Compile Include="Tools\GitManager.cs" />
+    <Compile Include="Model\IFile.cs" />
+    <Compile Include="Model\SolutionCKFile.cs" />
+    <Compile Include="Model\Workspace.cs" />
+    <Compile Include="Model\ValidationContext.cs" />
+    <Compile Include="Model\VSMP.cs" />
+    <Compile Include="Model\VSProjectBase.cs" />
+    <Compile Include="Model\VSSolutionObject.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Signing\AuthentiCodeSigner.cs" />
+    <Compile Include="Signing\KnownStrongNames.cs" />
+    <Compile Include="Signing\StrongNameSigner.cs" />
+    <Compile Include="Tools\CommentReader.cs" />
+    <Compile Include="Tools\FileHeaderProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Signing\SharedKey.snk" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tools\DefaultLicenseText.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Fixes\DefaultSharedAssemblyInfo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Fody.1.24.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.24.0\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.24.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.24.0\build\Fody.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
+if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.18.1.0\lib\net40\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.18.1.0\lib\net40\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

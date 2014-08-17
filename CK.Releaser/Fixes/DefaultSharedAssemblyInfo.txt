@@ -1,0 +1,24 @@
+using System;
+using System.Reflection;
+
+// Shared Assembly info: it must be added as a link to
+// each project.
+// It contains information that must be the same for all
+// assemblies produced by this solution.
+
+
+[assembly: AssemblyCompany( "Invenietis" )]
+[assembly: AssemblyProduct( "" )]
+[assembly: AssemblyCopyright( "Copyright © Invenietis 2014" )]
+[assembly: AssemblyTrademark( "" )]
+[assembly: CLSCompliant( true )]
+
+// In simple versioning mode, the version is centralized here.
+[assembly: AssemblyVersion( "1.0.0" )]
+[assembly: AssemblyInformationalVersion( "%semver% - %githash%" )]
+
+#if DEBUG
+    [assembly: AssemblyConfiguration("Debug")]
+#else
+    [assembly: AssemblyConfiguration( "Release" )]
+#endif
