@@ -88,15 +88,38 @@ namespace CK.Releaser.Info
         }
 
         /// <summary>
-        /// Ensures that a branch exists: if the directory does not exist, creates it
+        /// Ensures that a branch exists: if the directory does not exist, creates it and 
+        /// sets the PreRelease version to the branch name.
+        /// If an error occurs, returns null.
         /// </summary>
         /// <param name="solutionName">The solution name.</param>
         /// <param name="branchName">The branch name.</param>
-        /// <returns>A <see cref="BranchRelease"/>.</returns>
-        public BranchRelease EnsureBranch( string solutionName, string branchName )
+        /// <returns>A <see cref="BranchRelease"/> or null if an error occurred.</returns>
+        public BranchRelease EnsureBranch( IActivityMonitor monitor, string solutionName, string branchName )
         {
-            DirectoryInfo d = Directory.CreateDirectory( Path.Combine( DatabasePath, "Solutions", solutionName, branchName ) );
-            return FindOrCreateBranchRelease( solutionName, branchName, d.FullName );
+            string path = Path.Combine( DatabasePath, "Solutions", solutionName, branchName );
+            try
+            {
+                DirectoryInfo d = new DirectoryInfo( path );
+                bool exists = d.Exists;
+                if( !exists ) d.Create();
+                var b = FindOrCreateBranchRelease( solutionName, branchName, d.FullName );
+                if( !exists )
+                {
+                    var data = b.Current.GetData( monitor );
+                    if( data != null )
+                    {
+                        data.PreReleaseVersion = branchName;
+                        if( !b.Current.SaveData( monitor ) ) return null;
+                    }
+                }
+                return b;
+            }
+            catch( Exception ex )
+            {
+                monitor.Error().Send( ex, "While creating branch '{0}'.", path );
+                return null;
+            }
         }
 
         /// <summary>

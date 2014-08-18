@@ -71,9 +71,9 @@ namespace CK.Releaser
             }
             catch( Exception ex )
             {
-                ActivityMonitor.MonitoringError.Add( ex, "Unhandled error." );
+                ActivityMonitor.CriticalErrorCollector.Add( ex, "Unhandled error." );
             }
-            ActivityMonitor.MonitoringError.WaitOnErrorFromBackgroundThreadsPending();
+            ActivityMonitor.CriticalErrorCollector.WaitOnErrorFromBackgroundThreadsPending();
         }
     }
 }

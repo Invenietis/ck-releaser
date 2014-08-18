@@ -53,9 +53,16 @@ namespace CK.Releaser.Signing
         public override void Initialize( IInteractiveDevContext ctx )
         {
             base.Initialize( ctx );
-            var items = ctx.Workspace.ExeAndDllFiles.Outputs.Select( f => new ListViewItem( f.SolutionFilePath ) { Checked = true, Tag = f } );
-            _allOutputs.Items.AddRange( items.ToArray() );
+            ctx.Refreshed += ctx_Refreshed;
             _signToolPath.Text = AuthentiCodeSigner.FindDefaultSignToolPath( ctx.MainMonitor, false );
+            ctx_Refreshed( this, EventArgs.Empty );
+        }
+
+        void ctx_Refreshed( object sender, EventArgs e )
+        {
+            var items = DevContext.Workspace.ExeAndDllFiles.Outputs.Select( f => new ListViewItem( f.SolutionFilePath ) { Checked = true, Tag = f } );
+            _allOutputs.Items.Clear();
+            _allOutputs.Items.AddRange( items.ToArray() );
         }
 
         #region Strong naming
@@ -128,7 +135,7 @@ namespace CK.Releaser.Signing
             }
             catch( Exception ex )
             {
-                ActivityMonitor.MonitoringError.Add( ex, "While signing." );
+                ActivityMonitor.CriticalErrorCollector.Add( ex, "While signing." );
                 _privateKeyDesc.Text = String.Format( "Unexpected error: {0}", ex.Message );
             }
             finally
@@ -195,7 +202,7 @@ namespace CK.Releaser.Signing
             }
             catch( Exception ex )
             {
-                ActivityMonitor.MonitoringError.Add( ex, "While signing." );
+                ActivityMonitor.CriticalErrorCollector.Add( ex, "While signing." );
                 _pfxDescription.Text = String.Format( "Unexpected error: {0}", ex.Message );
             }
             finally

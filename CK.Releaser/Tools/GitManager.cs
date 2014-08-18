@@ -157,7 +157,7 @@ namespace CK.Releaser
             }
             catch( Exception ex )
             {
-                ActivityMonitor.MonitoringError.Add( ex, String.Format( "While closing '{0}'.", GitPath ) );
+                ActivityMonitor.CriticalErrorCollector.Add( ex, String.Format( "While closing '{0}'.", GitPath ) );
             }
         }
 

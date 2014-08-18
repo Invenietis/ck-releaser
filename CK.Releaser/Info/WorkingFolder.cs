@@ -186,7 +186,7 @@ namespace CK.Releaser.Info
                     string msg = "While deleting: " + _workingDir.FullName;
                     if( tryOnly == null )
                     {
-                        ActivityMonitor.MonitoringError.Add( ex, msg );
+                        ActivityMonitor.CriticalErrorCollector.Add( ex, msg );
                         _workingDir = null;
                     }
                     else

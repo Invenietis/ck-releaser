@@ -57,13 +57,10 @@ namespace CK.Releaser.Info
 
             _versionFromSource.Text = status.SimpleModeVersion.ToString( 3 );
             var data = Info.GetData( Page.DevContext.MainMonitor );
-            string preRelease = data != null ? data.PreReleaseVersion : null;
-            if( String.IsNullOrEmpty( preRelease ) ) preRelease = Info.Branch.BranchName;
+            _preRelease.Text = data != null ? data.PreReleaseVersion : null;
             _buildMetaData.Text = data != null ? data.BuildMetadataVersion : null;
-            _preRelease.Text = preRelease;
 
-            if( data != null ) _infoNotes.Text = data.Notes;
-            else _infoNotes.Text = "Error: unable to load data.";
+            _infoNotes.Text = data != null ? data.Notes : "Error: unable to load data.";
             _saveData.Font = _normalSaveFont;
         }
 

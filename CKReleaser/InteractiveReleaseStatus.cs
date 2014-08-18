@@ -67,7 +67,7 @@ namespace CK.Releaser
         {
             if( !_current.CanCreateCurrentBranch ) throw new InvalidOperationException( "Status.CanCreateCurrentBranch must not be false." );
             Debug.Assert( _current.BranchName != null && _ctx.InfoReleaseDatabase != null );
-            _ctx.InfoReleaseDatabase.EnsureBranch( _ctx.Workspace.SolutionCKFile.SolutionName, _current.BranchName );
+            _ctx.InfoReleaseDatabase.EnsureBranch( _ctx.MainMonitor, _ctx.Workspace.SolutionCKFile.SolutionName, _current.BranchName );
             Refresh();
             return _current.CurrentBranch;
         }

@@ -87,7 +87,7 @@ namespace CK.Releaser
                         }
                         catch( Exception ex )
                         {
-                            ActivityMonitor.MonitoringError.Add( ex, "while creating Page." );
+                            ActivityMonitor.CriticalErrorCollector.Add( ex, "while creating Page." );
                         }
                     }
                     return _page;
