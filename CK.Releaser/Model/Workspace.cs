@@ -115,6 +115,19 @@ namespace CK.Releaser
             }
         }
 
+        /// <summary>
+        /// Gets the main version: when <see cref="SolutionCKFile.VersioningModeSimple"/> is true, this 
+        /// is the <see cref="VersionFileManager.SharedVersionInfo"/>.<see cref="VersionFileManager.VFile.Version">Version</see>.
+        /// In Multiple mode, this MainVersion will be stored in the Solution.ck file (and the SharedAssemblyInfo will not contain it).
+        /// </summary>
+        public Version MainVersion
+        {
+            get
+            {
+                return _versionFileManager.SharedAssemblyInfoVersion;
+            }
+        }
+
         public ExeAndDllFiles ExeAndDllFiles
         {
             get { return _exeAndDllFiles; }

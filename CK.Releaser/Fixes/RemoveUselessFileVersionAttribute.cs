@@ -54,7 +54,7 @@ namespace CK.Releaser.Fixes
 
         public override void Run( FixContext ctx )
         {
-            _file.Source  = VersionUtil.EnsureVersionAttributes( ctx.Monitor, _file.Source );
+            _file.Source = VersionUtil.RemoveFileVersionAttribute( ctx.Monitor, _file.Source );
         }
 
     }

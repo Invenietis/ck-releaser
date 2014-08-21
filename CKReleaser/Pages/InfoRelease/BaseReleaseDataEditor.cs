@@ -55,7 +55,7 @@ namespace CK.Releaser.Info
         {
             DevContextReleaseStatus status = Page.DevContext.ReleaseHead.Status;
 
-            _versionFromSource.Text = status.SimpleModeVersion.ToString( 3 );
+            _versionFromSource.Text = status.MainVersion.ToString( 3 );
             var data = Info.GetData( Page.DevContext.MainMonitor );
             _preRelease.Text = data != null ? data.PreReleaseVersion : null;
             _buildMetaData.Text = data != null ? data.BuildMetadataVersion : null;

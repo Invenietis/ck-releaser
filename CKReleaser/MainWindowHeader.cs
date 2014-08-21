@@ -81,15 +81,17 @@ namespace CK.Releaser
                     _toolTip.SetToolTip( _gitBranchName, git.CommitUtcTime.ToString( Info.InfoReleaseDatabase.TimeFormat ) );
                 }
             }
+            _versionButton.Text = DevContext.ReleaseHead.Status.DisplayMainVersion;
             if( DevContext.IsWorkingFolderWritable() )
             {
                 _folderWritable.ImageIndex = 1;
+                _versionButton.Enabled = true;
             }
             else
             {
                 _folderWritable.ImageIndex = 2;
+                _versionButton.Enabled = false;
             }
-            _versionButton.Text = DevContext.ReleaseHead.Status.DisplayVersion;
         }
 
         private void _chooseFolderPath_Click( object sender, EventArgs e )

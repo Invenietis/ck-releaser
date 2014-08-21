@@ -39,6 +39,7 @@ namespace CK.Releaser
         public readonly string BranchName;
         public readonly string CommitSha;
         public readonly DateTime CommitUtcTime;
+        public readonly VersionOnBranch ReleasedVersion;
         public readonly Info.BranchRelease CurrentBranch;
         public readonly Info.InfoRelease ReadyToRelease;
         public readonly string StatusText;
@@ -57,20 +58,14 @@ namespace CK.Releaser
         /// <summary>
         /// The current version. Never null (defaults to 0.1.0).
         /// </summary>
-        public readonly Version SimpleModeVersion;
+        public readonly Version MainVersion;
         public readonly string PreReleaseVersion;
         public readonly string BuildMetadataVersion;
 
 
-        public string DisplayVersion
+        public string DisplayMainVersion
         {
-            get
-            {
-                string text = SimpleModeVersion.ToString();
-                if( !String.IsNullOrEmpty( PreReleaseVersion ) ) text += '-' + PreReleaseVersion;
-                if( !String.IsNullOrEmpty( BuildMetadataVersion ) ) text += '+' + BuildMetadataVersion;
-                return text;
-            }
+            get { return MainVersion.ToString(); }
         }
 
         public string CommitStandardTimeDisplay
@@ -82,57 +77,76 @@ namespace CK.Releaser
         {
             StatusText = "Unitialized status.";
             CommitUtcTime = Util.UtcMinValue;
-            SimpleModeVersion = new Version( 0, 1, 0 );
+            MainVersion = new Version( 0, 1, 0 );
         }
 
         public DevContextReleaseStatus( IActivityMonitor monitor, IDevContext ctx )
         {
+            MainVersion = ctx.Workspace.MainVersion;
+            if( MainVersion == null ) 
+            {
+                monitor.Warn().Send( "Missing Main Version. Defaults to 1.0.1." );
+                MainVersion = new Version( 0, 1, 0 );
+            }
             GitManager git = ctx.GitManager;
             BranchName = git != null ? git.CurrentBranchName : null;
             if( BranchName == null )
             {
-                StatusText = "Missing or uninitialized Git repository.";
+                monitor.Warn().Send( "Missing or uninitialized Git repository." );
             }
             else
             {
                 CommitSha = git.CommitSha;
                 CommitUtcTime = git.CommitUtcTime;
+                ReleasedVersion = git.ReleasedVersion;
+                if( git.ReleasedVersion.IsValid )
+                {
+                    if( BranchName == "(no branch)" )
+                    {
+                        BranchName = git.ReleasedVersion.BranchName;
+                    }
+                    else if( git.ReleasedVersion.BranchName != BranchName )
+                    {
+                        monitor.Fatal().Send( "Invalid Release Tag: Branch is '{0}' but released tag is '{1}'.", BranchName, git.ReleasedVersion );
+                    }
+                    if( !git.ReleasedVersion.Equals( MainVersion ) )
+                    {
+                        monitor.Fatal().Send( "Invalid Release Tag: source version is {0} but released tag is '{1}'.", MainVersion, git.ReleasedVersion );
+                    }
+                }
+
                 if( ctx.InfoReleaseDatabase == null )
                 {
-                    StatusText = "No Info release Database.";
+                    monitor.Warn().Send( "No Info release Database." );
                 }
                 else
                 {
                     if( BranchName == "(no branch)" )
                     {
                         BranchName = null;
-                        StatusText = "Not on a valid branch.";
-                        if( ctx.InfoReleaseDatabase != null )
-                        {
-                            ReadyToRelease = ctx.InfoReleaseDatabase.FindByCommit( monitor, CommitSha );
-                            if( ReadyToRelease != null )
-                            {
-                                CurrentBranch = ReadyToRelease.Branch;
-                                StatusText += " An info release is available.";
-                            }
-                            StatusText += " No info release exists for this commit.";
-                        }
-                        else StatusText += " No Info release Database.";
+                        monitor.Warn().Send( "Current head is not Branch nor a Released commit." );
                     }
                     else
                     {
                         CurrentBranch = ctx.InfoReleaseDatabase.FindBranch( ctx.Workspace.SolutionCKFile.SolutionName, BranchName );
                         if( CurrentBranch == null )
                         {
-                            CanCreateCurrentBranch = true;
-                            StatusText = String.Format( "Branch '{0}' has no associated information yet.", BranchName );
+                            if( ReleasedVersion.IsValid )
+                            {
+                                monitor.Fatal().Send( "Branch '{0}' does not exist in the ReleaseInfo database but a Release tag exits on the commit.", BranchName );
+                            }
+                            else
+                            {
+                                CanCreateCurrentBranch = true;
+                                monitor.Info().Send( "Branch '{0}' has no release yet.", BranchName );
+                            }
                         }
                         else
                         {
-                            StatusText = String.Format( "Info release for '{0}' is available.", BranchName );
+                            monitor.Trace().Send( "Info release for '{0}' is available.", BranchName );
                             if( git.IsDirty )
                             {
-                                StatusText += String.Format( " The working folder is dirty. It must be cleaned before releasing '{0}'.", BranchName );
+                                monitor.Info().Send( "The working folder is dirty. Commit your work before creating a 'v{0}-{1}' release.", MainVersion.ToString(), BranchName );
                             }
                             else
                             {
@@ -152,9 +166,7 @@ namespace CK.Releaser
                 }
             }
             // Version management.
-            SimpleModeVersion = ctx.Workspace.VersionFileManager.SimpleModeVersion;
-            if( SimpleModeVersion == null ) SimpleModeVersion = new Version( 0, 1, 0 );
-            CanSetSimpleModeVersion = ctx.IsWorkingFolderWritable() && ctx.Workspace.VersionFileManager.CanSetSimpleModeVersion;
+            CanSetSimpleModeVersion = ctx.IsWorkingFolderWritable() && ctx.Workspace.VersionFileManager.CanSetSharedAssemblyInfoVersion;
             if( ReadyToRelease != null )
             {
                 var data = ReadyToRelease.GetData( monitor );
@@ -178,7 +190,7 @@ namespace CK.Releaser
                     && CanReadyToReleaseCurrent == x.CanReadyToReleaseCurrent
                     && CanCreateCurrentBranch == x.CanCreateCurrentBranch
                     && CanSetSimpleModeVersion == x.CanSetSimpleModeVersion
-                    && SimpleModeVersion == x.SimpleModeVersion
+                    && MainVersion == x.MainVersion
                     && PreReleaseVersion == x.PreReleaseVersion
                     && BuildMetadataVersion == x.BuildMetadataVersion;
         }
@@ -191,7 +203,7 @@ namespace CK.Releaser
 
         public override int GetHashCode()
         {
-            return Util.Hash.Combine( Util.Hash.StartValue, BranchName, SimpleModeVersion, PreReleaseVersion, BuildMetadataVersion, CanSetSimpleModeVersion, CommitSha, CommitUtcTime, CurrentBranch, ReadyToRelease, StatusText, CanReadyToReleaseCurrent, CanCreateCurrentBranch ).GetHashCode();
+            return Util.Hash.Combine( Util.Hash.StartValue, BranchName, MainVersion, PreReleaseVersion, BuildMetadataVersion, CanSetSimpleModeVersion, CommitSha, CommitUtcTime, CurrentBranch, ReadyToRelease, StatusText, CanReadyToReleaseCurrent, CanCreateCurrentBranch ).GetHashCode();
         }
 
         public override string ToString()

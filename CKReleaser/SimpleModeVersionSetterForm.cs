@@ -50,7 +50,7 @@ namespace CK.Releaser
         void OnSomethingChanged( object sender, EventArgs e )
         {
             var status = _ctx.ReleaseHead.Status;
-            _versionEditorPanel.Version = status.SimpleModeVersion;
+            _versionEditorPanel.Version = status.MainVersion;
             _versionEditorPanel.PreRelease = status.PreReleaseVersion;
             _versionEditorPanel.BuildMetaData = status.BuildMetadataVersion;
             _versionEditorPanel.FromSourceEnabled = status.CanSetSimpleModeVersion;

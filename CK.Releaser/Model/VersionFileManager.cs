@@ -211,6 +211,7 @@ namespace CK.Releaser
                     }
                     if( ensureNeeded )
                     {
+                        ensureDone = true;
                         ctx.Add( new Fixes.EnsureFileHasVersionAttributes( this ) );
                     }
                 }
@@ -262,6 +263,9 @@ namespace CK.Releaser
             get { return _files; }
         }
 
+        /// <summary>
+        /// Gets the shared assembly info VFile if it exists.
+        /// </summary>
         public VFile SharedAssemblyInfo
         {
             get { return _sharedAssemblyInfo; }
@@ -272,19 +276,22 @@ namespace CK.Releaser
         /// Null if no SharedAssemblyInfo exists, if it does not contain a valid version, or if we are not 
         /// in simple versionning mode.
         /// </summary>
-        public Version SimpleModeVersion
+        public Version SharedAssemblyInfoVersion
         {
             get { return _sharedAssemblyInfo != null ? _sharedAssemblyInfo.Version : null; }
             set
             {
-                if( !CanSetSimpleModeVersion ) throw new InvalidOperationException( "CanSetSimpleModeVersion is false." );
+                if( !CanSetSharedAssemblyInfoVersion ) throw new InvalidOperationException( "CanSetSharedAssemblyInfoVersion is false." );
                 _sharedAssemblyInfo.Version = value;
             }
         }
 
-        public bool CanSetSimpleModeVersion
+        /// <summary>
+        /// One can set the <see cref="SharedAssemblyInfoVersion"/> if it already exists.
+        /// </summary>
+        public bool CanSetSharedAssemblyInfoVersion
         {
-            get { return SimpleModeVersion != null; }
+            get { return SharedAssemblyInfoVersion != null; }
         }
 
         internal void Add( string fullPath )

@@ -76,7 +76,7 @@ namespace CK.Releaser
         {
             if( String.IsNullOrEmpty( actor ) ) throw new ArgumentNullException( "actor" );
             if( !_current.CanReadyToReleaseCurrent ) throw new InvalidOperationException( "Status.CanReadyToReleaseCurrent must not be false." );
-            bool success = _current.CurrentBranch.ReadyToReleaseCurrent( _ctx.MainMonitor, _current.SimpleModeVersion, _current.CommitSha, _current.CommitUtcTime, actor );
+            bool success = _current.CurrentBranch.ReadyToReleaseCurrent( _ctx.MainMonitor, _current.MainVersion, _current.CommitSha, _current.CommitUtcTime, actor );
             Refresh();
             return success;
         }

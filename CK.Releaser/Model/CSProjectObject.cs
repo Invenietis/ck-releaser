@@ -416,7 +416,7 @@ namespace CK.Releaser
 
                         if( !HasFodyTargets || !FodyWeaverFileContainsCKStamp )
                         {
-                            m.Error().Send( "Please install CK.Stamp.Fody NuGet package." );
+                            m.Error().Send( "Please install CK.Stamp.Fody NuGet package in '{0}'.", ProjectFileName );
                         }
 
                         if( _versionHolderFile == null )
