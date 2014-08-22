@@ -36,32 +36,36 @@ namespace CK.Releaser
     /// </summary>
     public class DevContextReleaseStatus : IEquatable<DevContextReleaseStatus>
     {
+        public enum MainVersionStatus
+        {
+            /// <summary>
+            /// The version is necessarily valid if there is no git repository.
+            /// </summary>
+            Valid,
+            /// <summary>
+            /// The <see cref="Workspace.MainVersion"/> does not match the <see cref="GitManager.ReleasedVersion"/>.
+            /// </summary>
+            FatalMismatchWithReleasedTag,
+            /// <summary>
+            /// There is no released tag (<see cref="GitManager.ReleasedVersion"/> is not valid) but there is a <see cref="GitManager.GetLastReleased"/> and the 
+            /// current <see cref="Workspace.MainVersion"/> is smaller.
+            /// </summary>
+            TooSmallVersion
+        }
+
         public readonly string BranchName;
         public readonly string CommitSha;
         public readonly DateTime CommitUtcTime;
         public readonly VersionOnBranch ReleasedVersion;
-        public readonly Info.BranchRelease CurrentBranch;
-        public readonly Info.InfoRelease ReadyToRelease;
-        public readonly string StatusText;
-        public readonly bool CanReadyToReleaseCurrent;
-        public readonly bool CanCreateCurrentBranch;
-        public readonly bool CanSetSimpleModeVersion;
-        public bool CanSetPreReleaseVersion
-        {
-            get { return ReadyToRelease != null; }
-        }
-        public bool CanSetBuildMetadataVersion
-        {
-            get { return ReadyToRelease != null; }
-        }
-
+        public readonly GitManager.ReleasedCommit LastReleased;
         /// <summary>
         /// The current version. Never null (defaults to 0.1.0).
         /// </summary>
         public readonly Version MainVersion;
-        public readonly string PreReleaseVersion;
-        public readonly string BuildMetadataVersion;
-
+        public readonly bool CanSetMainVersion;
+        public readonly MainVersionStatus VersionStatus;
+        public readonly bool ReleasedTagDifferentBranchError;
+        public readonly bool CanCreateReleaseTag;
 
         public string DisplayMainVersion
         {
@@ -75,7 +79,6 @@ namespace CK.Releaser
 
         public DevContextReleaseStatus()
         {
-            StatusText = "Unitialized status.";
             CommitUtcTime = Util.UtcMinValue;
             MainVersion = new Version( 0, 1, 0 );
         }
@@ -88,10 +91,12 @@ namespace CK.Releaser
                 monitor.Warn().Send( "Missing Main Version. Defaults to 1.0.1." );
                 MainVersion = new Version( 0, 1, 0 );
             }
+            CanSetMainVersion = ctx.IsWorkingFolderWritable() && ctx.Workspace.CanSetMainVersion;
             GitManager git = ctx.GitManager;
             BranchName = git != null ? git.CurrentBranchName : null;
             if( BranchName == null )
             {
+                VersionStatus = MainVersionStatus.Valid;
                 monitor.Warn().Send( "Missing or uninitialized Git repository." );
             }
             else
@@ -99,6 +104,7 @@ namespace CK.Releaser
                 CommitSha = git.CommitSha;
                 CommitUtcTime = git.CommitUtcTime;
                 ReleasedVersion = git.ReleasedVersion;
+                LastReleased = git.GetLastReleased();
                 if( git.ReleasedVersion.IsValid )
                 {
                     if( BranchName == "(no branch)" )
@@ -107,109 +113,84 @@ namespace CK.Releaser
                     }
                     else if( git.ReleasedVersion.BranchName != BranchName )
                     {
+                        ReleasedTagDifferentBranchError = true;
                         monitor.Fatal().Send( "Invalid Release Tag: Branch is '{0}' but released tag is '{1}'.", BranchName, git.ReleasedVersion );
                     }
+                    // Check the version.
                     if( !git.ReleasedVersion.Equals( MainVersion ) )
                     {
+                        VersionStatus = MainVersionStatus.FatalMismatchWithReleasedTag;
                         monitor.Fatal().Send( "Invalid Release Tag: source version is {0} but released tag is '{1}'.", MainVersion, git.ReleasedVersion );
-                    }
-                }
-
-                if( ctx.InfoReleaseDatabase == null )
-                {
-                    monitor.Warn().Send( "No Info release Database." );
-                }
-                else
-                {
-                    if( BranchName == "(no branch)" )
-                    {
-                        BranchName = null;
-                        monitor.Warn().Send( "Current head is not Branch nor a Released commit." );
                     }
                     else
                     {
-                        CurrentBranch = ctx.InfoReleaseDatabase.FindBranch( ctx.Workspace.SolutionCKFile.SolutionName, BranchName );
-                        if( CurrentBranch == null )
-                        {
-                            if( ReleasedVersion.IsValid )
-                            {
-                                monitor.Fatal().Send( "Branch '{0}' does not exist in the ReleaseInfo database but a Release tag exits on the commit.", BranchName );
-                            }
-                            else
-                            {
-                                CanCreateCurrentBranch = true;
-                                monitor.Info().Send( "Branch '{0}' has no release yet.", BranchName );
-                            }
-                        }
-                        else
-                        {
-                            monitor.Trace().Send( "Info release for '{0}' is available.", BranchName );
-                            if( git.IsDirty )
-                            {
-                                monitor.Info().Send( "The working folder is dirty. Commit your work before creating a 'v{0}-{1}' release.", MainVersion.ToString(), BranchName );
-                            }
-                            else
-                            {
-                                ReadyToRelease = ctx.InfoReleaseDatabase.FindByCommit( monitor, CommitSha );
-                                if( ReadyToRelease != null )
-                                {
-                                    StatusText += " Current commit is ready to be released.";
-                                }
-                                else
-                                {
-                                    CanReadyToReleaseCurrent = true;
-                                    StatusText += " Information release can be created for this commit.";
-                                }
-                            }
-                        }
+                        // Even if branch differ, in terms of version, it is valid.
+                        VersionStatus = MainVersionStatus.Valid;
                     }
                 }
-            }
-            // Version management.
-            CanSetSimpleModeVersion = ctx.IsWorkingFolderWritable() && ctx.Workspace.VersionFileManager.CanSetSharedAssemblyInfoVersion;
-            if( ReadyToRelease != null )
-            {
-                var data = ReadyToRelease.GetData( monitor );
-                if( data != null )
+                else
                 {
-                    PreReleaseVersion = data.PreReleaseVersion;
-                    BuildMetadataVersion = data.BuildMetadataVersion;
+                    // No current Released tag.
+                    if( LastReleased != null && LastReleased.Version.CompareTo( MainVersion ) >= 0 )
+                    {
+                        monitor.Warn().Send( "Current version '{0}' must be greater than the last one '{1}'.", MainVersion, LastReleased.Version );
+                        VersionStatus = MainVersionStatus.TooSmallVersion;
+                    }
+                    else
+                    {
+                        VersionStatus = MainVersionStatus.Valid;
+                        CanCreateReleaseTag = !git.IsDirty;
+                        Debug.Assert( CanCreateReleaseTag == git.CanSetReleasedVersion ); 
+                    }
                 }
-                else StatusText += " Error while reading release data!";
             }
         }
 
         public bool Equals( DevContextReleaseStatus x )
         {
-            return BranchName == x.BranchName
-                    && CurrentBranch == x.CurrentBranch
-                    && ReadyToRelease == x.ReadyToRelease
+            return x != null 
+                    && BranchName == x.BranchName
                     && CommitSha == x.CommitSha
                     && CommitUtcTime == x.CommitUtcTime
-                    && StatusText == x.StatusText
-                    && CanReadyToReleaseCurrent == x.CanReadyToReleaseCurrent
-                    && CanCreateCurrentBranch == x.CanCreateCurrentBranch
-                    && CanSetSimpleModeVersion == x.CanSetSimpleModeVersion
+                    && ReleasedVersion == x.ReleasedVersion
+                    && LastReleased == x.LastReleased
                     && MainVersion == x.MainVersion
-                    && PreReleaseVersion == x.PreReleaseVersion
-                    && BuildMetadataVersion == x.BuildMetadataVersion;
+                    && CanSetMainVersion == x.CanSetMainVersion
+                    && VersionStatus == x.VersionStatus
+                    && ReleasedTagDifferentBranchError == x.ReleasedTagDifferentBranchError
+                    && CanCreateReleaseTag == x.CanCreateReleaseTag;
         }
 
         public override bool Equals( object obj )
         {
-            var x = obj as DevContextReleaseStatus;
-            return x != null && Equals( x );
+            return Equals( obj as DevContextReleaseStatus );
         }
 
         public override int GetHashCode()
         {
-            return Util.Hash.Combine( Util.Hash.StartValue, BranchName, MainVersion, PreReleaseVersion, BuildMetadataVersion, CanSetSimpleModeVersion, CommitSha, CommitUtcTime, CurrentBranch, ReadyToRelease, StatusText, CanReadyToReleaseCurrent, CanCreateCurrentBranch ).GetHashCode();
+            return Util.Hash.Combine( Util.Hash.StartValue, BranchName, 
+                                                            CommitSha, 
+                                                            CommitUtcTime, 
+                                                            ReleasedVersion,
+                                                            LastReleased,
+                                                            MainVersion, 
+                                                            CanSetMainVersion, 
+                                                            VersionStatus, 
+                                                            ReleasedTagDifferentBranchError, 
+                                                            CanCreateReleaseTag ).GetHashCode();
         }
 
-        public override string ToString()
+        static public bool operator ==( DevContextReleaseStatus s1, DevContextReleaseStatus s2 )
         {
-            return StatusText;
+            return ReferenceEquals( s1, null ) ? ReferenceEquals( s2, null ) : s1.Equals( s2 );
         }
+
+        static public bool operator !=( DevContextReleaseStatus s1, DevContextReleaseStatus s2 )
+        {
+            return !(s1 == s2);
+        }
+
+
     }
 
 }

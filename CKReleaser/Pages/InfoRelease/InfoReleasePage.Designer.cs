@@ -55,23 +55,12 @@ namespace CK.Releaser.Info
             this._currentPath = new System.Windows.Forms.TextBox();
             this._currentPathLabel = new System.Windows.Forms.Label();
             this._chooseCurrent = new System.Windows.Forms.Button();
-            this._dbTreeView = new System.Windows.Forms.TreeView();
-            this._dbContentContainer = new System.Windows.Forms.SplitContainer();
-            this._dbContentPages = new CK.Releaser.GUI.TabControlWithClosingBox();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this._currentHeadStatus = new System.Windows.Forms.TextBox();
             this._createCurrentBranch = new System.Windows.Forms.Button();
             this._currentBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this._dbContentContainer)).BeginInit();
-            this._dbContentContainer.Panel1.SuspendLayout();
-            this._dbContentContainer.Panel2.SuspendLayout();
-            this._dbContentContainer.SuspendLayout();
-            this._dbContentPages.SuspendLayout();
             this.SuspendLayout();
             // 
             // _currentBox
@@ -118,81 +107,6 @@ namespace CK.Releaser.Info
             this._chooseCurrent.Text = "...";
             this._chooseCurrent.UseVisualStyleBackColor = true;
             this._chooseCurrent.Click += new System.EventHandler(this._chooseCurrent_Click);
-            // 
-            // _dbTreeView
-            // 
-            this._dbTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._dbTreeView.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._dbTreeView.HideSelection = false;
-            this._dbTreeView.Location = new System.Drawing.Point(0, 0);
-            this._dbTreeView.Name = "_dbTreeView";
-            this._dbTreeView.Size = new System.Drawing.Size(138, 319);
-            this._dbTreeView.TabIndex = 2;
-            this._dbTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this._dbTreeView_AfterSelect);
-            this._dbTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this._dbTreeView_NodeMouseClick);
-            // 
-            // _dbContentContainer
-            // 
-            this._dbContentContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._dbContentContainer.Location = new System.Drawing.Point(0, 113);
-            this._dbContentContainer.Name = "_dbContentContainer";
-            // 
-            // _dbContentContainer.Panel1
-            // 
-            this._dbContentContainer.Panel1.Controls.Add(this._dbTreeView);
-            // 
-            // _dbContentContainer.Panel2
-            // 
-            this._dbContentContainer.Panel2.Controls.Add(this._dbContentPages);
-            this._dbContentContainer.Size = new System.Drawing.Size(753, 319);
-            this._dbContentContainer.SplitterDistance = 138;
-            this._dbContentContainer.TabIndex = 3;
-            // 
-            // _dbContentPages
-            // 
-            this._dbContentPages.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-            this._dbContentPages.Controls.Add(this.tabPage4);
-            this._dbContentPages.Controls.Add(this.tabPage5);
-            this._dbContentPages.Controls.Add(this.tabPage6);
-            this._dbContentPages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._dbContentPages.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this._dbContentPages.ItemSize = new System.Drawing.Size(300, 18);
-            this._dbContentPages.Location = new System.Drawing.Point(0, 0);
-            this._dbContentPages.Name = "_dbContentPages";
-            this._dbContentPages.Padding = new System.Drawing.Point(20, 0);
-            this._dbContentPages.SelectedIndex = 0;
-            this._dbContentPages.Size = new System.Drawing.Size(611, 319);
-            this._dbContentPages.TabIndex = 1;
-            this._dbContentPages.SelectedIndexChanged += new System.EventHandler(this._dbContentPages_SelectedIndexChanged);
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Location = new System.Drawing.Point(4, 4);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(603, 293);
-            this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "tabPage4 etec cy rtyr t crtcy";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Location = new System.Drawing.Point(4, 4);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(603, 293);
-            this.tabPage5.TabIndex = 2;
-            this.tabPage5.Text = "tabPage5";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Location = new System.Drawing.Point(4, 4);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(603, 293);
-            this.tabPage6.TabIndex = 3;
-            this.tabPage6.Text = "t";
-            this.tabPage6.UseVisualStyleBackColor = true;
             // 
             // tabPage1
             // 
@@ -241,7 +155,6 @@ namespace CK.Releaser.Info
             this._createCurrentBranch.TabIndex = 6;
             this._createCurrentBranch.Text = "Create branch";
             this._createCurrentBranch.UseVisualStyleBackColor = true;
-            this._createCurrentBranch.Click += new System.EventHandler(this._createCurrentBranch_Click);
             // 
             // InfoReleasePage
             // 
@@ -249,17 +162,11 @@ namespace CK.Releaser.Info
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this._createCurrentBranch);
             this.Controls.Add(this._currentHeadStatus);
-            this.Controls.Add(this._dbContentContainer);
             this.Controls.Add(this._currentBox);
             this.Name = "InfoReleasePage";
             this.Size = new System.Drawing.Size(756, 439);
             this._currentBox.ResumeLayout(false);
             this._currentBox.PerformLayout();
-            this._dbContentContainer.Panel1.ResumeLayout(false);
-            this._dbContentContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this._dbContentContainer)).EndInit();
-            this._dbContentContainer.ResumeLayout(false);
-            this._dbContentPages.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -271,12 +178,6 @@ namespace CK.Releaser.Info
         private System.Windows.Forms.TextBox _currentPath;
         private System.Windows.Forms.Label _currentPathLabel;
         private System.Windows.Forms.Button _chooseCurrent;
-        private System.Windows.Forms.TreeView _dbTreeView;
-        private System.Windows.Forms.SplitContainer _dbContentContainer;
-        private CK.Releaser.GUI.TabControlWithClosingBox _dbContentPages;
-        private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;

@@ -58,82 +58,35 @@ namespace CK.Releaser
             get { return _current; }
         }
 
-        /// <summary>
-        /// Create the information for the current branch.
-        /// Status.CanCreateCurrentBranch must be true otherwise an <see cref="InvalidOperationException"/> is thrown.
-        /// </summary>
-        /// <returns>The created <see cref="BranchRelease"/> object.</returns>
-        public Info.BranchRelease CreateCurrentBranch()
-        {
-            if( !_current.CanCreateCurrentBranch ) throw new InvalidOperationException( "Status.CanCreateCurrentBranch must not be false." );
-            Debug.Assert( _current.BranchName != null && _ctx.InfoReleaseDatabase != null );
-            _ctx.InfoReleaseDatabase.EnsureBranch( _ctx.MainMonitor, _ctx.Workspace.SolutionCKFile.SolutionName, _current.BranchName );
-            Refresh();
-            return _current.CurrentBranch;
-        }
+        ///// <summary>
+        ///// Create the information for the current branch.
+        ///// Status.CanCreateCurrentBranch must be true otherwise an <see cref="InvalidOperationException"/> is thrown.
+        ///// </summary>
+        ///// <returns>The created <see cref="BranchRelease"/> object.</returns>
+        //public Info.BranchRelease CreateCurrentBranch()
+        //{
+        //    if( !_current.CanCreateCurrentBranch ) throw new InvalidOperationException( "Status.CanCreateCurrentBranch must not be false." );
+        //    Debug.Assert( _current.BranchName != null && _ctx.InfoReleaseDatabase != null );
+        //    _ctx.InfoReleaseDatabase.EnsureBranch( _ctx.MainMonitor, _ctx.Workspace.SolutionCKFile.SolutionName, _current.BranchName );
+        //    Refresh();
+        //    return _current.CurrentBranch;
+        //}
 
-        public bool ReadyToReleaseCurrent( string actor )
-        {
-            if( String.IsNullOrEmpty( actor ) ) throw new ArgumentNullException( "actor" );
-            if( !_current.CanReadyToReleaseCurrent ) throw new InvalidOperationException( "Status.CanReadyToReleaseCurrent must not be false." );
-            bool success = _current.CurrentBranch.ReadyToReleaseCurrent( _ctx.MainMonitor, _current.MainVersion, _current.CommitSha, _current.CommitUtcTime, actor );
-            Refresh();
-            return success;
-        }
-
-        public void SetVersionsWhenPossible( Version v, string preRelease, string buildMetadata )
-        {
-            if( Status.CanSetSimpleModeVersion ) DoSetSimpleModeVersion( v );
-            if( Status.CanSetPreReleaseVersion ) DoSetPreReleaseVersion( preRelease );
-            if( Status.CanSetBuildMetadataVersion ) DoSetBuildMetadataVersion( buildMetadata );
-            if( Status.CanSetSimpleModeVersion || Status.CanSetPreReleaseVersion || Status.CanSetBuildMetadataVersion ) Refresh();
-        }
+        //public bool ReadyToReleaseCurrent( string actor )
+        //{
+        //    if( String.IsNullOrEmpty( actor ) ) throw new ArgumentNullException( "actor" );
+        //    if( !_current.CanReadyToReleaseCurrent ) throw new InvalidOperationException( "Status.CanReadyToReleaseCurrent must not be false." );
+        //    bool success = _current.CurrentBranch.ReadyToReleaseCurrent( _ctx.MainMonitor, _current.MainVersion, _current.CommitSha, _current.CommitUtcTime, actor );
+        //    Refresh();
+        //    return success;
+        //}
 
         public void SetSimpleModeVersion( Version v )
         {
-            if( !Status.CanSetSimpleModeVersion ) throw new InvalidOperationException();
-            DoSetSimpleModeVersion( v );
-            Refresh();
-        }
-
-        public void SetPreReleaseVersion( string v )
-        {
-            if( !Status.CanSetPreReleaseVersion ) throw new InvalidOperationException();
-            DoSetPreReleaseVersion( v );
-            Refresh();
-        }
-
-        public void SetBuildMetadataVersion( string v )
-        {
-            if( !Status.CanSetBuildMetadataVersion ) throw new InvalidOperationException();
-            DoSetBuildMetadataVersion( v );
-            Refresh();
-        }
-
-        void DoSetSimpleModeVersion( Version v )
-        {
-            _ctx.Workspace.VersionFileManager.SharedAssemblyInfo.Version = v;
+            if( !Status.CanSetMainVersion ) throw new InvalidOperationException();
+            _ctx.Workspace.MainVersion = v;
             _ctx.Workspace.SaveDirtyFiles( _ctx.MainMonitor );
-        }
-
-        void DoSetPreReleaseVersion( string v )
-        {
-            var data = _current.ReadyToRelease.GetData( _ctx.MainMonitor );
-            if( data != null )
-            {
-                data.PreReleaseVersion = v;
-                _current.ReadyToRelease.SaveData( _ctx.MainMonitor );
-            }
-        }
-
-        void DoSetBuildMetadataVersion( string v )
-        {
-            var data = _current.ReadyToRelease.GetData( _ctx.MainMonitor );
-            if( data != null )
-            {
-                data.BuildMetadataVersion = v;
-                _current.ReadyToRelease.SaveData( _ctx.MainMonitor );
-            }
+            Refresh();
         }
 
         /// <summary>
@@ -142,7 +95,7 @@ namespace CK.Releaser
         internal bool Refresh()
         {
             var newOne = new DevContextReleaseStatus( _ctx.MainMonitor, _ctx );
-            if( !newOne.Equals( _current ) )
+            if( newOne != _current )
             {
                 _current = newOne;
                 var h = StatusChanged;

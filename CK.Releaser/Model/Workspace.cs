@@ -126,7 +126,26 @@ namespace CK.Releaser
             {
                 return _versionFileManager.SharedAssemblyInfoVersion;
             }
+            set
+            {
+                _versionFileManager.SharedAssemblyInfoVersion = value;
+            }
         }
+
+        /// <summary>
+        /// Gets whether the <see cref="MainVersion"/> can be changed.
+        /// This simply relays to <see cref="VersionFileManager.CanSetSharedAssemblyInfoVersion"/> since "Multiple" 
+        /// versioning is not yet supported.
+        /// </summary>
+        public bool CanSetMainVersion
+        {
+            get
+            {
+                return _versionFileManager.CanSetSharedAssemblyInfoVersion;
+            }
+        }
+
+
 
         public ExeAndDllFiles ExeAndDllFiles
         {

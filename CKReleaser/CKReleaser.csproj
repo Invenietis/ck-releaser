@@ -123,32 +123,11 @@
     <Compile Include="Pages\ConfigurePackaging\PackagingPage.Designer.cs">
       <DependentUpon>PackagingPage.cs</DependentUpon>
     </Compile>
-    <Compile Include="Pages\InfoRelease\BaseReleaseDataEditor.cs">
+    <Compile Include="Pages\InfoRelease\InfoReleasePage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Pages\InfoRelease\BaseReleaseDataEditor.Designer.cs">
-      <DependentUpon>BaseReleaseDataEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\InfoReleaseControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\InfoReleaseControl.Designer.cs">
-      <DependentUpon>InfoReleaseControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\BranchControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\BranchControl.Designer.cs">
-      <DependentUpon>BranchControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\LaunchReleasePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\LaunchReleasePanel.Designer.cs">
-      <DependentUpon>LaunchReleasePanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\PageControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Pages\InfoRelease\InfoReleasePage.Designer.cs">
+      <DependentUpon>InfoReleasePage.cs</DependentUpon>
     </Compile>
     <Compile Include="Pages\InfoRelease\ReleaseInfoDatabaseFinder.cs">
       <SubType>Form</SubType>
@@ -188,12 +167,6 @@
     <Compile Include="Pages\Tests\NUnitPage.Designer.cs">
       <DependentUpon>NUnitPage.cs</DependentUpon>
     </Compile>
-    <Compile Include="Pages\InfoRelease\InfoReleasePage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Pages\InfoRelease\InfoReleasePage.Designer.cs">
-      <DependentUpon>InfoReleasePage.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\ReleaserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -231,17 +204,8 @@
     <EmbeddedResource Include="Pages\Home\HomePage.resx">
       <DependentUpon>HomePage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Pages\InfoRelease\BaseReleaseDataEditor.resx">
-      <DependentUpon>BaseReleaseDataEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pages\InfoRelease\InfoReleaseControl.resx">
-      <DependentUpon>InfoReleaseControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pages\InfoRelease\BranchControl.resx">
-      <DependentUpon>BranchControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pages\InfoRelease\LaunchReleasePanel.resx">
-      <DependentUpon>LaunchReleasePanel.cs</DependentUpon>
+    <EmbeddedResource Include="Pages\InfoRelease\InfoReleasePage.resx">
+      <DependentUpon>InfoReleasePage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\InfoRelease\ReleaseInfoDatabaseFinder.resx">
       <DependentUpon>ReleaseInfoDatabaseFinder.cs</DependentUpon>
@@ -251,9 +215,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Signing\DisplayStrongNameKey.resx">
       <DependentUpon>DisplayStrongNameKey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pages\InfoRelease\InfoReleasePage.resx">
-      <DependentUpon>InfoReleasePage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

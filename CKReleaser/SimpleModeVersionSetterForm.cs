@@ -50,12 +50,12 @@ namespace CK.Releaser
         void OnSomethingChanged( object sender, EventArgs e )
         {
             var status = _ctx.ReleaseHead.Status;
-            _versionEditorPanel.Version = status.MainVersion;
-            _versionEditorPanel.PreRelease = status.PreReleaseVersion;
-            _versionEditorPanel.BuildMetaData = status.BuildMetadataVersion;
-            _versionEditorPanel.FromSourceEnabled = status.CanSetSimpleModeVersion;
-            _versionEditorPanel.PreReleaseEnabled = status.CanSetPreReleaseVersion;
-            _versionEditorPanel.BuildMetaDataEnabled = status.CanSetBuildMetadataVersion;
+            //_versionEditorPanel.Version = status.MainVersion;
+            //_versionEditorPanel.PreRelease = status.PreReleaseVersion;
+            //_versionEditorPanel.BuildMetaData = status.BuildMetadataVersion;
+            //_versionEditorPanel.FromSourceEnabled = status.CanSetMainVersion;
+            //_versionEditorPanel.PreReleaseEnabled = status.CanSetPreReleaseVersion;
+            //_versionEditorPanel.BuildMetaDataEnabled = status.CanSetBuildMetadataVersion;
         }
 
         private void _okButton_Click( object sender, EventArgs e )
@@ -63,7 +63,7 @@ namespace CK.Releaser
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
             _ctx.ReleaseHead.StatusChanged -= OnSomethingChanged;
-            _ctx.ReleaseHead.SetVersionsWhenPossible( _versionEditorPanel.Version, _versionEditorPanel.PreRelease, _versionEditorPanel.BuildMetaData );
+            _ctx.ReleaseHead.SetSimpleModeVersion( _versionEditorPanel.Version );
         }
 
         private void _cancelButton_Click( object sender, EventArgs e )

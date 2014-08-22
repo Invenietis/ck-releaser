@@ -15,7 +15,7 @@ namespace CK.Releaser
     /// in the repository.
     /// When comparing, only Major.Minor.Patch is used: BrancName has no special meaning.
     /// </summary>
-    public struct VersionOnBranch : IEquatable<VersionOnBranch>, IEquatable<Version>, IComparable<VersionOnBranch>
+    public struct VersionOnBranch : IEquatable<VersionOnBranch>, IEquatable<Version>, IComparable<VersionOnBranch>, IComparable<Version>
     {
         /// <summary>
         /// When <see cref="IsValid"/> is true, necessarily greater or equal to 0.
@@ -68,6 +68,19 @@ namespace CK.Releaser
             int cmp = Major - other.Major;
             if( cmp == 0 ) cmp = Minor - other.Minor;
             if( cmp == 0 )  cmp = Patch - other.Patch;
+            return cmp;
+        }
+        
+        /// <summary>
+        /// Comparing this a standard <see cref="Version"/> (<see cref="Version.Build"/> is ignored.
+        /// </summary>
+        /// <param name="other">Other to compare to.</param>
+        /// <returns></returns>
+        public int CompareTo( Version other )
+        {
+            int cmp = Major - other.Major;
+            if( cmp == 0 ) cmp = Minor - other.Minor;
+            if( cmp == 0 )  cmp = Patch - other.Revision;
             return cmp;
         }
         

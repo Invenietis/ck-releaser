@@ -58,7 +58,7 @@ namespace CK.Releaser
         /// <summary>
         /// Captures released information from a release Tag like "v4.0.0-master".
         /// </summary>
-        public class ReleasedCommit
+        public class ReleasedCommit : IEquatable<ReleasedCommit>
         {
             public readonly string CommitSha;
             public readonly DateTime CommitUtcTime;
@@ -74,6 +74,32 @@ namespace CK.Releaser
                 CommitSha = sha;
                 CommitUtcTime = time;
                 Version = v;
+            }
+
+            static public bool operator==( ReleasedCommit rc1, ReleasedCommit rc2 )
+            {
+                return Object.ReferenceEquals( rc1, null ) ? Object.ReferenceEquals( rc2, null ) : rc1.Equals( rc2 );
+            }
+
+            static public bool operator !=( ReleasedCommit rc1, ReleasedCommit rc2 )
+            {
+                return !(rc1 == rc2 );
+            }
+
+            public bool Equals( ReleasedCommit x )
+            {
+                return x != null && CommitSha == x.CommitSha && CommitUtcTime == x.CommitUtcTime && Version == x.Version;
+            }
+
+            public override bool Equals( object obj )
+            {
+                var rc = obj as ReleasedCommit;
+                return rc != null ? Equals( rc ) : false;
+            }
+
+            public override int GetHashCode()
+            {
+                return Util.Hash.Combine( Util.Hash.StartValue, CommitSha, CommitUtcTime, Version ).GetHashCode();
             }
         }
 
