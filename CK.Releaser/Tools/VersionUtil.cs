@@ -34,7 +34,7 @@ namespace CK.Releaser
 {
     public static class VersionUtil
     {
-        public static readonly string StandardInformationalVersionContent = "%semver% - %githash%";
+        public static readonly string StandardInformationalVersionContent = "%ck-standard%";
 
         // [assembly: AssemblyVersion( "4.0.0" )]
         // [assembly: AssemblyInformationalVersion( "%semver% - %githash%" )]

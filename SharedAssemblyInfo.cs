@@ -38,7 +38,8 @@ using System.Reflection;
 
 // In simple versioning mode, the version is centralized here.
 [assembly: AssemblyVersion( "0.1.0" )]
-[assembly: AssemblyInformationalVersion( "%semver% - %githash%" )]
+//[assembly: AssemblyInformationalVersion( "%semver% - %githash%" )]
+[assembly: AssemblyInformationalVersion( "%ck-standard%" )]
 
 #if DEBUG
     [assembly: AssemblyConfiguration("Debug")]
