@@ -95,7 +95,7 @@ namespace CK.Releaser
             get { return _fixes; }
         }
 
-        public bool ApplyFixes( IDevContext ctx, out int enabledFixCount, out int disabledFixCount, IActivityMonitor m = null )
+        public bool ApplyFixes( IDevContext ctx, bool memorizeDisabledFixes, out int enabledFixCount, out int disabledFixCount, IActivityMonitor m = null )
         {
             enabledFixCount = disabledFixCount = 0;
             if( m == null ) m = _monitor;
@@ -126,7 +126,10 @@ namespace CK.Releaser
                         else ++disabledFixCount;
                     }
                 }
-                ctx.Workspace.SolutionCKFile.SetDisabledFixes( _fixes.Where( f => f.IsDisabled ).Select( f => f.MemoryKey ) );
+                if( memorizeDisabledFixes )
+                {
+                    ctx.Workspace.SolutionCKFile.SetDisabledFixes( _fixes.Where( f => f.IsDisabled ).Select( f => f.MemoryKey ) );
+                }
                 ctx.Workspace.SaveDirtyFiles( m );
                 if( fC.RenamingCount > 0 )
                 {

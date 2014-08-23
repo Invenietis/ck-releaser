@@ -37,7 +37,20 @@ namespace CK.Releaser
         public static readonly XName PropertyGroup = MSBuild + "PropertyGroup";
         public static readonly XName ProjectGuid = MSBuild + "ProjectGuid";
         public static readonly XName OutputType = MSBuild + "OutputType";
+        
+        /// <summary>
+        /// First component of the Target Framework Moniker (TFM). See: http://msdn.microsoft.com/en-us/library/vstudio/ee395432%28v=vs.100%29.aspx.
+        /// </summary>
+        public static readonly XName TargetFrameworkIdentifier = MSBuild + "TargetFrameworkIdentifier";
+        /// <summary>
+        /// Second component of the Target Framework Moniker (TFM). See: http://msdn.microsoft.com/en-us/library/vstudio/ee395432%28v=vs.100%29.aspx.
+        /// </summary>
         public static readonly XName TargetFrameworkVersion = MSBuild + "TargetFrameworkVersion";
+        /// <summary>
+        /// Third and last component of the Target Framework Moniker (TFM). See: http://msdn.microsoft.com/en-us/library/vstudio/ee395432%28v=vs.100%29.aspx.
+        /// </summary>
+        public static readonly XName TargetFrameworkProfile = MSBuild + "TargetFrameworkProfile";
+
         public static readonly XName AppDesignerFolder = MSBuild + "AppDesignerFolder";
 
         public static readonly XName PublishUrl = MSBuild + "PublishUrl";

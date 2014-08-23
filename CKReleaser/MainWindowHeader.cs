@@ -64,25 +64,54 @@ namespace CK.Releaser
 
         void OnStatusChanged()
         {
+            DevContextReleaseStatus status = DevContext.ReleaseHead.Status;
             var git = DevContext.GitManager;
-            if( git == null ) _gitBranchName.Text = "(No repository)";
-            else if( !git.IsOpen ) _gitBranchName.Text = "(unable to open .git repo)";
+            _gitBranchName.Text = git.DisplayBranchName();
+            if( git != null && git.IsValid )
+            {
+                _toolTip.SetToolTip( _gitBranchName, status.CommitStandardTimeDisplay );
+            }
             else
             {
-                string s = git.CurrentBranchName;
-                if( s == null ) _gitBranchName.Text = "(unitialized repo)";
-                else
-                {
-                    if( git.IsDirty )
-                    {
-                        s += " *";
-                    }
-                    _gitBranchName.Text = s;
-                    _toolTip.SetToolTip( _gitBranchName, git.CommitUtcTime.ToString( Info.InfoReleaseDatabase.TimeFormat ) );
-                }
+                _toolTip.SetToolTip( _gitBranchName, null );
             }
             _versionButton.Text = DevContext.ReleaseHead.Status.DisplayMainVersion;
-            if( DevContext.IsWorkingFolderWritable() )
+            _toolTip.SetToolTip( _versionLabel, "Version is correct." );
+            if( status.HasVersionError )
+            {
+                Debug.Assert( git.ReleasedVersion.IsValid );
+                _versionLabel.ImageIndex = 5;
+                if( status.ReleasedTagDifferentBranchError )
+                {
+                    _toolTip.SetToolTip( _versionLabel, String.Format( "Branch name clash between actual branch name '{0}' and released tag '{1}'.", git.CurrentBranchName, git.ReleasedVersion ) );
+                }
+                else
+                {
+                    Debug.Assert( status.VersionStatus == DevContextReleaseStatus.MainVersionStatus.FatalMismatchWithReleasedTag );
+                    _toolTip.SetToolTip( _versionLabel, String.Format( "Version from source '{0}' is not the same as the released tag '{1}'.", status.MainVersion, git.ReleasedVersion ) );
+                }
+            }
+            else if( status.HasVersionWarning )
+            {
+                _versionLabel.ImageIndex = 4;
+                if( status.VersionStatus == DevContextReleaseStatus.MainVersionStatus.TooSmallVersionFromLastReleased )
+                {
+                    Debug.Assert( status.LastReleased != null && status.LastReleased.Version.IsValid );
+                    _toolTip.SetToolTip( _versionLabel, String.Format( "Version must be greater than '{0}'.", status.LastReleased.Version.ToStringWithoutBranchName() ) );
+                }
+                else
+                {
+                    Debug.Assert( status.VersionStatus == DevContextReleaseStatus.MainVersionStatus.VersionMustBeUpgraded );
+                    Debug.Assert( status.ReleasedVersion.IsValid );
+                    _toolTip.SetToolTip( _versionLabel, String.Format( "There are changed files: current version should be increased above '{0}'.", status.ReleasedVersion.ToStringWithoutBranchName() ) );
+                }
+            }
+            else
+            {
+                _versionLabel.ImageIndex = 3;
+            }
+
+            if( git.IsWorkingFolderWritable() )
             {
                 _folderWritable.ImageIndex = 1;
                 _versionButton.Enabled = true;
@@ -92,6 +121,7 @@ namespace CK.Releaser
                 _folderWritable.ImageIndex = 2;
                 _versionButton.Enabled = false;
             }
+            _toolTip.SetToolTip( _folderWritable, git.IsWorkingFolderWritableDescription() );
         }
 
         private void _chooseFolderPath_Click( object sender, EventArgs e )
@@ -110,7 +140,7 @@ namespace CK.Releaser
 
         private void _versionButton_Click( object sender, EventArgs e )
         {
-            using( var w = new SimpleModeVersionSetterForm( DevContext ) )
+            using( var w = new MainVersionSetterForm( DevContext ) )
             {
                 w.ShowDialog( this );
             }

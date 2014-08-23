@@ -119,7 +119,7 @@ namespace CK.Releaser
 
         public virtual bool Refresh( IActivityMonitor monitor, string newWorkspacePath )
         {
-            string path = newWorkspacePath ?? _initialRoot;
+            string path = newWorkspacePath ?? _solutionFolder.WorkspacePath;
             Workspace s;
             try
             {

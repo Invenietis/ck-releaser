@@ -41,7 +41,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CK.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=edfa2f62fc978217, processorArchitecture=MSIL">
@@ -171,11 +171,11 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="RefreshErrorsEventArgs.cs" />
-    <Compile Include="SimpleModeVersionSetterForm.cs">
+    <Compile Include="MainVersionSetterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SimpleModeVersionSetterForm.Designer.cs">
-      <DependentUpon>SimpleModeVersionSetterForm.cs</DependentUpon>
+    <Compile Include="MainVersionSetterForm.Designer.cs">
+      <DependentUpon>MainVersionSetterForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="GUI\Prompt.resx">
       <DependentUpon>Prompt.cs</DependentUpon>
@@ -232,8 +232,8 @@
     <EmbeddedResource Include="Pages\Tests\NUnitPage.resx">
       <DependentUpon>NUnitPage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SimpleModeVersionSetterForm.resx">
-      <DependentUpon>SimpleModeVersionSetterForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainVersionSetterForm.resx">
+      <DependentUpon>MainVersionSetterForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

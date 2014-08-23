@@ -77,7 +77,7 @@ namespace CK.Releaser
 
         public void Save( IActivityMonitor m )
         {
-            if( _isDirty && Workspace.DevContext.IsWorkingFolderWritable() )
+            if( _isDirty && Workspace.DevContext.GitManager.IsWorkingFolderWritable() )
             {
                 try
                 {

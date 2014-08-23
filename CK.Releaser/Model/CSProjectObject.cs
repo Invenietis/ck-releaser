@@ -63,7 +63,7 @@ namespace CK.Releaser
 
         public override void Save( IActivityMonitor m )
         {
-            if( _isDirty && Workspace.DevContext.IsWorkingFolderWritable() )
+            if( _isDirty && Workspace.DevContext.GitManager.IsWorkingFolderWritable() )
             {
                 try
                 {
@@ -184,11 +184,6 @@ namespace CK.Releaser
             e.Value = name;
         }
 
-        public string TargetFrameworkVersion
-        {
-            get { return SingleStringValue( VSMP.TargetFrameworkVersion ); }
-        }
-
         public bool HasFodyTargets
         {
             get { return XmlDocument.Root.Elements( VSMP.Import ).Attributes( VSMP.ProjectAttribute ).Any( a => a.Value.EndsWith( "Fody.targets" ) ); }
@@ -224,20 +219,72 @@ namespace CK.Releaser
         }
 
         /// <summary>
-        /// Maps "v4.0" to "Net40". It is the identifier that is used to name things.
+        /// Maps <see cref="TargetFrameworkIdentifier"/>, <see cref="TargetFrameworkVersion"/> and <see cref="TargetFrameworkProfile"/> to a shorten 
+        /// Target Framework Moniker. It is the final identifier that is used to name things (like folder).
+        /// This mimics the "Framework Profile" of nuget (http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package#Grouping_Assemblies_by_Framework_Version).
+        /// This stuff is awfully complex, evolving and badly documented.
+        /// This property only handles what we need...
+        /// The best documentation I found is here: http://blog.stephencleary.com/2012/05/framework-profiles-in-net.html
         /// </summary>
-        public string TargetFrameworkVersionIdentifier
+        public string SimplifiedTargetFrameworkMoniker
         {
-            get 
-            { 
-                switch( SingleStringValue( VSMP.TargetFrameworkVersion ) )
+            get
+            {
+                switch( TargetFrameworkIdentifier.ToLowerInvariant() )
                 {
-                    case "v4.0": return "Net40";
-                    case "v4.5": return "Net45";
-                    default: throw new CKException( "Unknown target framework: " + TargetFrameworkVersion );
+                    case ".netframework":
+                        switch( TargetFrameworkVersion.ToLowerInvariant() )
+                        {
+                            case "v3.5": return "net35";
+                            case "v4.0": return "net40";
+                            case "v4.5": return "net45";
+                            case "v4.51": return "net451";
+                        };
+                        break;
+                    case "silverlight":
+                        switch( TargetFrameworkVersion )
+                        {
+                            case "v3.0": return "sl3";
+                            case "v4.0": return "sl4";
+                            case "v5.0": return "sl5";
+                        }
+                        break;
                 }
+                throw new CKException( "Unhandled SimplifiedTargetFrameworkMoniker for TargetFrameworkVersion : TargetFrameworkIdentifier = {0}, TargetFrameworkVersion = {1}, TargetFrameworkProfile = {2}.",
+                                            TargetFrameworkIdentifier, TargetFrameworkVersion, TargetFrameworkProfile );
+
             }
         }
+
+        /// <summary>
+        /// Gets the TargetFrameworkIdentifier ("SilverLight"). Defaults to ".NetFramework".
+        /// First component of the Target Framework Moniker (TFM). See: http://msdn.microsoft.com/en-us/library/vstudio/ee395432%28v=vs.100%29.aspx.
+        /// </summary>
+        public string TargetFrameworkIdentifier
+        {
+            get { return SingleStringValue( VSMP.TargetFrameworkIdentifier ) ?? ".NetFramework"; }
+        }
+
+        /// <summary>
+        /// Gets the TargetFrameworkVersion (like "v4.0").
+        /// Second component of the Target Framework Moniker (TFM). See: http://msdn.microsoft.com/en-us/library/vstudio/ee395432%28v=vs.100%29.aspx.
+        /// </summary>
+        public string TargetFrameworkVersion
+        {
+            get
+            {
+                return SingleStringValue( VSMP.TargetFrameworkVersion );
+            }
+        }
+
+        /// <summary>
+        /// Gets the TargetFrameworkProfile ("Client"). Defaults to String.Empty.
+        /// Third and last component of the Target Framework Moniker (TFM). See: http://msdn.microsoft.com/en-us/library/vstudio/ee395432%28v=vs.100%29.aspx.
+        /// </summary>
+        public string TargetFrameworkProfile
+        {
+            get { return SingleStringValue( VSMP.TargetFrameworkProfile ) ?? String.Empty; }
+        }         
 
         public string RelativePathToSolutionFolder
         {
@@ -264,6 +311,23 @@ namespace CK.Releaser
             get { return RelativePathToSolutionFolder + CKMP.SharedAssemblyInfoFileName; }
         }
 
+        public bool IsBelowTestsFolder
+        {
+            get
+            {
+                return WorkspaceBasedPath.StartsWith( "Tests\\" );
+            }
+        }
+
+
+        public bool IsTestAssemblyOrContainedInATestProjectOrBelowTestsFolder
+        {
+            get
+            {
+                return IsBelowTestsFolder || HasNUnitFrameworkReference || IsContainedInATestProject;
+            }
+        }
+
         public bool IsTestAssemblyOrContainedInATestProject
         {
             get
@@ -277,6 +341,9 @@ namespace CK.Releaser
             get { return AboveProject != null && AboveProject.IsTestAssemblyOrContainedInATestProject; }
         }
 
+        /// <summary>
+        /// Gets the first name across the elements (descendants of the root) or null.
+        /// </summary>
         string SingleStringValue( XName name )
         {
             var k = XmlDocument.Root.Descendants( name ).FirstOrDefault();
@@ -345,10 +412,6 @@ namespace CK.Releaser
                         ctx.Add( new Fixes.AssemblyNameMustMatchProjectName( this ) );
                     }
 
-                    // All projects can have a VersionFileManager.VFile.
-                    LocateVersionHolderFile( m );
-                    if( _versionHolderFile != null ) _versionHolderFile.Register( this );
-
                     // All projects can be ClickOnce... ClickOnce projects must have a PublishUrl in Release/ folder.
                     var publishUrl = PublishUrl;
                     if( publishUrl != null )
@@ -360,31 +423,29 @@ namespace CK.Releaser
                         }
                     }
 
-                    // Do not require a test assembly to be signed nor to have installed CK.Stamp nor to be bound tp a VersionFileManager.VFile.
-                    if( IsTestAssemblyOrContainedInATestProject )
+                    // Do not require a test assembly to be signed nor to have installed CK.Stamp nor to be bound to a VersionFileManager.VFile
+                    // nor to reference the SharedAssembmyInfo.cs file.
+                    if( IsTestAssemblyOrContainedInATestProjectOrBelowTestsFolder )
                     {
-                        #region IsTestAssemblyOrContainedInATestProject
-                        if( IsContainedInATestProject )
-                        {
-                            // An assembly contained in a Test assembly has no constraint (except the AssemblyName above)
-                            // and the reference to the SharedAssemblyInfo below.
-                        }
-                        else
+                        if( HasNUnitFrameworkReference )
                         {
                             // A test assembly must have a name that ends with ".Tests" and
                             // its folder must be correcly named also.
                             Debug.Assert( HasNUnitFrameworkReference );
-                            if( !ProjectFileName.EndsWith( ".Tests" ) && !ProjectFileName.EndsWith( ".Tests." + TargetFrameworkVersionIdentifier ) )
+                            if( !ProjectFileName.EndsWith( ".Tests" ) && !ProjectFileName.EndsWith( ".Tests." + SimplifiedTargetFrameworkMoniker, StringComparison.OrdinalIgnoreCase ) )
                             {
                                 m.Error().Send( "A test library (that references nunit.framework) name must end with '.Tests'." );
                             }
                             else CheckFolderName( m );
                         }
-                        #endregion
                     }
                     else
                     {
                         #region "Normal" project...
+                        // All projects can have a VersionFileManager.VFile.
+                        LocateVersionHolderFile( m );
+                        if( _versionHolderFile != null ) _versionHolderFile.Register( this );
+
                         CheckFolderName( m );
                         if( !SignAssembly )
                         {
@@ -423,10 +484,10 @@ namespace CK.Releaser
                         {
                             m.Error().Send( "Unable to locate the file that defines the AssemblyVersion attribute. Such a file can be named 'AssemblyInfo.cs' or any '*VersionInfo.cs' file." );
                         }
+                        // "Normal" projects must reference the SharedAssemblyInfo.
+                        CheckSharedAssemblyInfo( ctx, m );
                         #endregion
                     }
-                    // All projects must reference the SharedAssemblyInfo.
-                    CheckSharedAssemblyInfo( ctx, m );
                 }
                 else m.Warn().Send( "OutputType not handled: '{0}'.", OutputType );
             }
@@ -478,7 +539,7 @@ namespace CK.Releaser
         bool CheckAssemblyName( IActivityMonitor m )
         {
             if( AssemblyName == ProjectFileName ) return true;
-            if( StringComparer.OrdinalIgnoreCase.Equals( AssemblyName + "." + TargetFrameworkVersionIdentifier, ProjectFileName ) ) return true;
+            if( StringComparer.OrdinalIgnoreCase.Equals( AssemblyName + "." + SimplifiedTargetFrameworkMoniker, ProjectFileName ) ) return true;
             m.Error().Send( "The AssemblyName '{0}' must be the same as the .csproj file name '{1}'.", AssemblyName, ProjectFileName );
             return false;
         }

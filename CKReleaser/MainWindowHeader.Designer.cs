@@ -57,13 +57,13 @@ namespace CK.Releaser
             this._gitBranchName = new System.Windows.Forms.TextBox();
             this._chooseFolderPath = new System.Windows.Forms.Button();
             this._toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.label2 = new System.Windows.Forms.Label();
+            this._versionLabel = new System.Windows.Forms.Label();
+            this._imageList = new System.Windows.Forms.ImageList(this.components);
             this._groupVersionAndGit = new System.Windows.Forms.GroupBox();
+            this._folderWritable = new System.Windows.Forms.Label();
             this._versionButton = new System.Windows.Forms.Button();
             this._solutionFolderPath = new System.Windows.Forms.TextBox();
             this._openPath = new System.Windows.Forms.Button();
-            this._imageList = new System.Windows.Forms.ImageList(this.components);
-            this._folderWritable = new System.Windows.Forms.Label();
             this._groupVersionAndGit.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +71,7 @@ namespace CK.Releaser
             // 
             this._infoCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._infoCount.AutoSize = true;
-            this._infoCount.Location = new System.Drawing.Point(307, 17);
+            this._infoCount.Location = new System.Drawing.Point(348, 17);
             this._infoCount.Name = "_infoCount";
             this._infoCount.Size = new System.Drawing.Size(159, 13);
             this._infoCount.TabIndex = 6;
@@ -82,7 +82,7 @@ namespace CK.Releaser
             this._gitBranchName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._gitBranchName.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this._gitBranchName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this._gitBranchName.Location = new System.Drawing.Point(236, 13);
+            this._gitBranchName.Location = new System.Drawing.Point(169, 13);
             this._gitBranchName.Name = "_gitBranchName";
             this._gitBranchName.ReadOnly = true;
             this._gitBranchName.Size = new System.Drawing.Size(114, 20);
@@ -93,7 +93,7 @@ namespace CK.Releaser
             // _chooseFolderPath
             // 
             this._chooseFolderPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this._chooseFolderPath.Location = new System.Drawing.Point(280, 14);
+            this._chooseFolderPath.Location = new System.Drawing.Point(321, 14);
             this._chooseFolderPath.Name = "_chooseFolderPath";
             this._chooseFolderPath.Size = new System.Drawing.Size(24, 20);
             this._chooseFolderPath.TabIndex = 8;
@@ -101,36 +101,61 @@ namespace CK.Releaser
             this._chooseFolderPath.UseVisualStyleBackColor = true;
             this._chooseFolderPath.Click += new System.EventHandler(this._chooseFolderPath_Click);
             // 
-            // label2
+            // _versionLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 17);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 13);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Version";
+            this._versionLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this._versionLabel.ImageIndex = 3;
+            this._versionLabel.ImageList = this._imageList;
+            this._versionLabel.Location = new System.Drawing.Point(6, 16);
+            this._versionLabel.Name = "_versionLabel";
+            this._versionLabel.Size = new System.Drawing.Size(64, 17);
+            this._versionLabel.TabIndex = 9;
+            this._versionLabel.Text = "Version";
+            this._versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // _imageList
+            // 
+            this._imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("_imageList.ImageStream")));
+            this._imageList.TransparentColor = System.Drawing.Color.Transparent;
+            this._imageList.Images.SetKeyName(0, "Folder.png");
+            this._imageList.Images.SetKeyName(1, "LockOpened.png");
+            this._imageList.Images.SetKeyName(2, "LockClosed.png");
+            this._imageList.Images.SetKeyName(3, "Trace.png");
+            this._imageList.Images.SetKeyName(4, "Warning.png");
+            this._imageList.Images.SetKeyName(5, "Error.png");
             // 
             // _groupVersionAndGit
             // 
             this._groupVersionAndGit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._groupVersionAndGit.Controls.Add(this._folderWritable);
             this._groupVersionAndGit.Controls.Add(this._versionButton);
-            this._groupVersionAndGit.Controls.Add(this.label2);
+            this._groupVersionAndGit.Controls.Add(this._versionLabel);
             this._groupVersionAndGit.Controls.Add(this._gitBranchName);
-            this._groupVersionAndGit.Location = new System.Drawing.Point(472, -1);
+            this._groupVersionAndGit.Location = new System.Drawing.Point(521, 0);
             this._groupVersionAndGit.Name = "_groupVersionAndGit";
-            this._groupVersionAndGit.Size = new System.Drawing.Size(371, 42);
+            this._groupVersionAndGit.Size = new System.Drawing.Size(304, 42);
             this._groupVersionAndGit.TabIndex = 10;
             this._groupVersionAndGit.TabStop = false;
+            // 
+            // _folderWritable
+            // 
+            this._folderWritable.AutoSize = true;
+            this._folderWritable.ImageIndex = 2;
+            this._folderWritable.ImageList = this._imageList;
+            this._folderWritable.Location = new System.Drawing.Point(286, 16);
+            this._folderWritable.Name = "_folderWritable";
+            this._folderWritable.Size = new System.Drawing.Size(10, 13);
+            this._folderWritable.TabIndex = 11;
+            this._folderWritable.Text = " ";
             // 
             // _versionButton
             // 
             this._versionButton.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._versionButton.Location = new System.Drawing.Point(47, 12);
+            this._versionButton.Location = new System.Drawing.Point(76, 12);
             this._versionButton.Name = "_versionButton";
-            this._versionButton.Size = new System.Drawing.Size(185, 23);
+            this._versionButton.Size = new System.Drawing.Size(88, 23);
             this._versionButton.TabIndex = 10;
-            this._versionButton.Text = "14.14.15-develop.12";
+            this._versionButton.Text = "14.14.157";
             this._versionButton.UseVisualStyleBackColor = true;
             this._versionButton.Click += new System.EventHandler(this._versionButton_Click);
             // 
@@ -141,7 +166,7 @@ namespace CK.Releaser
             this._solutionFolderPath.Location = new System.Drawing.Point(33, 14);
             this._solutionFolderPath.Name = "_solutionFolderPath";
             this._solutionFolderPath.ReadOnly = true;
-            this._solutionFolderPath.Size = new System.Drawing.Size(243, 20);
+            this._solutionFolderPath.Size = new System.Drawing.Size(282, 20);
             this._solutionFolderPath.TabIndex = 5;
             // 
             // _openPath
@@ -155,25 +180,6 @@ namespace CK.Releaser
             this._openPath.UseVisualStyleBackColor = true;
             this._openPath.Click += new System.EventHandler(this._openPath_Click);
             // 
-            // _imageList
-            // 
-            this._imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("_imageList.ImageStream")));
-            this._imageList.TransparentColor = System.Drawing.Color.Transparent;
-            this._imageList.Images.SetKeyName(0, "Folder.png");
-            this._imageList.Images.SetKeyName(1, "LockOpened.png");
-            this._imageList.Images.SetKeyName(2, "LockClosed.png");
-            // 
-            // _folderWritable
-            // 
-            this._folderWritable.AutoSize = true;
-            this._folderWritable.ImageIndex = 2;
-            this._folderWritable.ImageList = this._imageList;
-            this._folderWritable.Location = new System.Drawing.Point(354, 16);
-            this._folderWritable.Name = "_folderWritable";
-            this._folderWritable.Size = new System.Drawing.Size(10, 13);
-            this._folderWritable.TabIndex = 11;
-            this._folderWritable.Text = " ";
-            // 
             // MainWindowHeader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -184,7 +190,7 @@ namespace CK.Releaser
             this.Controls.Add(this._infoCount);
             this.Controls.Add(this._solutionFolderPath);
             this.Name = "MainWindowHeader";
-            this.Size = new System.Drawing.Size(846, 43);
+            this.Size = new System.Drawing.Size(828, 48);
             this._groupVersionAndGit.ResumeLayout(false);
             this._groupVersionAndGit.PerformLayout();
             this.ResumeLayout(false);
@@ -198,7 +204,7 @@ namespace CK.Releaser
         private System.Windows.Forms.TextBox _gitBranchName;
         private System.Windows.Forms.Button _chooseFolderPath;
         private System.Windows.Forms.ToolTip _toolTip;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label _versionLabel;
         private System.Windows.Forms.GroupBox _groupVersionAndGit;
         private System.Windows.Forms.Button _versionButton;
         private System.Windows.Forms.TextBox _solutionFolderPath;

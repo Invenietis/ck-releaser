@@ -38,7 +38,7 @@ namespace CK.Releaser.Home
         readonly IInteractiveDevContext _devContext;
         readonly ValidationContext _ctx;
         readonly string _applyTextFormat;
-        int _enabledFixeCount;
+        int _enabledFixCount;
 
         public FixWindow( IInteractiveDevContext devContext, ValidationContext ctx )
         {
@@ -47,6 +47,11 @@ namespace CK.Releaser.Home
             _ctx = ctx;
             InitializeComponent();
             _applyTextFormat = _closeAndApply.Text;
+        }
+
+        public bool MemorizeDisabledFixes
+        {
+            get { return !_doNotMemorizeDisabledFixes.Checked; }
         }
 
         protected override void OnLoad( EventArgs e )
@@ -63,7 +68,7 @@ namespace CK.Releaser.Home
             }
             _fixList.ResumeLayout();
             UpdateCloseAndApplyText();
-            if( !_devContext.IsWorkingFolderWritable() )
+            if( !_devContext.GitManager.IsWorkingFolderWritable() )
             {
                 _closeAndApply.Enabled = _fixList.Enabled = false;
             }
@@ -90,20 +95,21 @@ namespace CK.Releaser.Home
         {
             if( e.NewValue == CheckState.Unchecked )
             {
-                if( MessageBox.Show( "This fix will be disabled. The fact that you disabled it will be stored in the Solution.ck: it will remain disabled.\r\nAre youy sure to disable it?",
+                if( _doNotMemorizeDisabledFixes.Checked
+                    || MessageBox.Show( "This fix will be disabled. The fact that you disabled it will be stored in the Solution.ck: it will remain disabled.\r\nAre youy sure to disable it?",
                                      "Caution", MessageBoxButtons.YesNo ) == DialogResult.No )
                 {
                     e.NewValue = e.CurrentValue;
                 }
-                else --_enabledFixeCount;
+                else --_enabledFixCount;
             }
-            else ++_enabledFixeCount;
+            else ++_enabledFixCount;
             UpdateCloseAndApplyText();
         }
 
         void UpdateCloseAndApplyText()
         {
-            _closeAndApply.Text = String.Format( _applyTextFormat, _enabledFixeCount );
+            _closeAndApply.Text = String.Format( _applyTextFormat, _enabledFixCount );
         }
     }
 }

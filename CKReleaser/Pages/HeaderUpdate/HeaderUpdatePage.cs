@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CK.Releaser.HeaderUpdate
 {
@@ -44,6 +45,10 @@ namespace CK.Releaser.HeaderUpdate
         public override void Initialize( IInteractiveDevContext ctx )
         {
             base.Initialize( ctx );
+            if( File.Exists( ctx.Workspace.WorkspacePath + "license.txt" ) )
+            {
+                _text.Text = File.ReadAllText( ctx.Workspace.WorkspacePath + "license.txt" );
+            }
             _text.Text = Tools.FileHeaderProcessor.DefaultLicenceText;
             _selectedPath.Text = DevContext.Workspace.WorkspacePath;
         }

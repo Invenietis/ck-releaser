@@ -22,7 +22,7 @@
     <AssemblyOriginatorKeyFile>..\SharedKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DevContextReleaseStatus.cs" />
@@ -30,7 +30,7 @@
     <Compile Include="Fixes\CorrectMajorMinorPatchVersion.cs" />
     <Compile Include="Fixes\EnsureReleaseFolder.cs" />
     <Compile Include="Fixes\RemoveUselessFileVersionAttribute.cs" />
-    <Compile Include="Model\ModelExtension.cs" />
+    <Compile Include="AllExtension.cs" />
     <Compile Include="Model\VersionFileManager.cs" />
     <Compile Include="Signing\ClickOnceSigner.cs" />
     <Compile Include="Tools\ToolPathFinder.cs" />

@@ -51,7 +51,7 @@ namespace CK.Releaser.Fixes
 
         public override void Run( FixContext ctx )
         {
-            if( Project.AssemblyName != Project.ProjectFileName && Project.AssemblyName + '.' + Project.TargetFrameworkVersionIdentifier != Project.ProjectFileName )
+            if( Project.AssemblyName != Project.ProjectFileName && Project.AssemblyName + '.' + Project.SimplifiedTargetFrameworkMoniker != Project.ProjectFileName )
             {
                 Project.SetAssemblyName( Project.ProjectFileName );
             }

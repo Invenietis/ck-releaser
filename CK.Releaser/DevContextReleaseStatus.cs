@@ -50,7 +50,11 @@ namespace CK.Releaser
             /// There is no released tag (<see cref="GitManager.ReleasedVersion"/> is not valid) but there is a <see cref="GitManager.GetLastReleased"/> and the 
             /// current <see cref="Workspace.MainVersion"/> is smaller.
             /// </summary>
-            TooSmallVersion
+            TooSmallVersionFromLastReleased,
+            /// <summary>
+            /// There is a released tag and the repository is dirty: source version sould be increased.
+            /// </summary>
+            VersionMustBeUpgraded
         }
 
         public readonly string BranchName;
@@ -77,6 +81,22 @@ namespace CK.Releaser
             get { return CommitUtcTime.ToString( Info.InfoReleaseDatabase.TimeFormat ); }
         }
 
+        /// <summary>
+        /// Branch name or version difference.
+        /// </summary>
+        public bool HasVersionError
+        {
+            get { return ReleasedTagDifferentBranchError || VersionStatus == MainVersionStatus.FatalMismatchWithReleasedTag; }
+        }
+
+        /// <summary>
+        /// The <see cref="MainVersion"/> is too small.
+        /// </summary>
+        public bool HasVersionWarning
+        {
+            get { return VersionStatus == MainVersionStatus.TooSmallVersionFromLastReleased || VersionStatus == MainVersionStatus.VersionMustBeUpgraded; }
+        }
+
         public DevContextReleaseStatus()
         {
             CommitUtcTime = Util.UtcMinValue;
@@ -91,8 +111,8 @@ namespace CK.Releaser
                 monitor.Warn().Send( "Missing Main Version. Defaults to 1.0.1." );
                 MainVersion = new Version( 0, 1, 0 );
             }
-            CanSetMainVersion = ctx.IsWorkingFolderWritable() && ctx.Workspace.CanSetMainVersion;
             GitManager git = ctx.GitManager;
+            CanSetMainVersion = git.IsWorkingFolderWritable() && ctx.Workspace.CanSetMainVersion;
             BranchName = git != null ? git.CurrentBranchName : null;
             if( BranchName == null )
             {
@@ -117,7 +137,7 @@ namespace CK.Releaser
                         monitor.Fatal().Send( "Invalid Release Tag: Branch is '{0}' but released tag is '{1}'.", BranchName, git.ReleasedVersion );
                     }
                     // Check the version.
-                    if( !git.ReleasedVersion.Equals( MainVersion ) )
+                    if( !git.IsDirty && !git.ReleasedVersion.Equals( MainVersion ) )
                     {
                         VersionStatus = MainVersionStatus.FatalMismatchWithReleasedTag;
                         monitor.Fatal().Send( "Invalid Release Tag: source version is {0} but released tag is '{1}'.", MainVersion, git.ReleasedVersion );
@@ -125,7 +145,14 @@ namespace CK.Releaser
                     else
                     {
                         // Even if branch differ, in terms of version, it is valid.
-                        VersionStatus = MainVersionStatus.Valid;
+                        // But if the repository is dirty, we are not really on the commit point, we must warn if 
+                        // the current source version has not been upgraded.
+                        if( git.IsDirty && git.ReleasedVersion.CompareTo( MainVersion ) >= 0 )
+                        {
+                            monitor.Warn().Send( "Current version '{0}' should be increased above '{1}'.", MainVersion, ReleasedVersion.ToStringWithoutBranchName() );
+                            VersionStatus = MainVersionStatus.VersionMustBeUpgraded;
+                        }
+                        else VersionStatus = MainVersionStatus.Valid;
                     }
                 }
                 else
@@ -134,7 +161,7 @@ namespace CK.Releaser
                     if( LastReleased != null && LastReleased.Version.CompareTo( MainVersion ) >= 0 )
                     {
                         monitor.Warn().Send( "Current version '{0}' must be greater than the last one '{1}'.", MainVersion, LastReleased.Version );
-                        VersionStatus = MainVersionStatus.TooSmallVersion;
+                        VersionStatus = MainVersionStatus.TooSmallVersionFromLastReleased;
                     }
                     else
                     {

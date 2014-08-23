@@ -31,7 +31,7 @@ using System.Reflection;
 
 
 [assembly: AssemblyCompany( "Invenietis" )]
-[assembly: AssemblyProduct( "" )]
+[assembly: AssemblyProduct( "CK-Releaser" )]
 [assembly: AssemblyCopyright( "Copyright © Invenietis 2014" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: CLSCompliant( true )]

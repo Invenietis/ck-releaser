@@ -208,16 +208,6 @@ namespace CK.Releaser
         }
 
         /// <summary>
-        /// Gets whether the working folder is writable.
-        /// It is writable if the <see cref="CurrentBranchName"/> is null (unitialized repo) or if is not the special name "(no branch)".
-        /// Caution: When <see cref="IsOpen"/> is false, since we haveno information, we consider that the working folder is writable.
-        /// </summary>
-        public bool IsWorkingFolderWritable
-        {
-            get { return _branchName == null || _branchName != "(no branch)"; }
-        }
-        
-        /// <summary>
         /// Gets the current commit 40 characters Sha1.
         /// Can be null if the repository is not correctly initialized or <see cref="IsOpen"/> is false.
         /// </summary>

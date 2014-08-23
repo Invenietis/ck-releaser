@@ -72,7 +72,7 @@ namespace CK.Releaser
         }
         
         /// <summary>
-        /// Comparing this a standard <see cref="Version"/> (<see cref="Version.Build"/> is ignored.
+        /// Comparing this a standard <see cref="Version"/> (<see cref="Version.Revision"/> is ignored.
         /// </summary>
         /// <param name="other">Other to compare to.</param>
         /// <returns></returns>
@@ -80,7 +80,7 @@ namespace CK.Releaser
         {
             int cmp = Major - other.Major;
             if( cmp == 0 ) cmp = Minor - other.Minor;
-            if( cmp == 0 )  cmp = Patch - other.Revision;
+            if( cmp == 0 )  cmp = Patch - other.Build;
             return cmp;
         }
         
@@ -91,7 +91,7 @@ namespace CK.Releaser
 
         public bool Equals( Version other )
         {
-            return Major == other.Major && Minor == other.Minor && Patch == other.Revision;
+            return Major == other.Major && Minor == other.Minor && Patch == other.Build;
         }
 
         public override int GetHashCode()
@@ -114,6 +114,15 @@ namespace CK.Releaser
         static public bool operator !=( VersionOnBranch v1, VersionOnBranch v2 )
         {
             return !v1.Equals( v2 );
+        }
+
+        /// <summary>
+        /// Gets the string version (without 'v' prefix) and without <see cref="BranchName"/>.
+        /// </summary>
+        /// <returns>The Major.Minor.Patch.</returns>
+        public string ToStringWithoutBranchName()
+        {
+            return String.Format( CultureInfo.InvariantCulture, "{0}.{1}.{2}", Major, Minor, Patch );
         }
 
         /// <summary>

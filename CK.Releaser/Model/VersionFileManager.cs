@@ -187,6 +187,8 @@ namespace CK.Releaser
 
             internal void Validate( ValidationContext ctx )
             {
+                if( _solutionBasedPath.StartsWith( "Tests\\" ) ) return;
+
                 var m = ctx.Monitor;
                 VersionUtil.CheckStatus s = VersionUtil.CheckVersionAttributes( Source );
                 // Always remove FileVersionAttribute.
@@ -239,7 +241,7 @@ namespace CK.Releaser
                         else
                         {
                             var common = String.Format( "'{0}' defines version '{1}'.", _solutionBasedPath, _versionStringRead );
-                            if( _versionRead.Build == -1 || _versionRead.Revision >= 0 )
+                            if( !_versionRead.IsSemVerCompliant() )
                             {
                                 ctx.Monitor.Error().Send( "{0} Version must be Major.Minor.Patch. (Three and only three numbers.)", common );
                                 ctx.Add( new Fixes.CorrectMajorMinorPatchVersion( this ) );

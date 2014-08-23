@@ -116,14 +116,14 @@ namespace CK.Releaser.Home
                 if( enabledCount > 0 )
                 {
                     validText = String.Format( "Some checks failed. {0} automatic fix(es) are available", enabledCount );
-                    if( DevContext.IsWorkingFolderWritable() ) validText += '.';
+                    if( DevContext.GitManager.IsWorkingFolderWritable() ) validText += '.';
                     else validText += " but working folder is not writable (not on a valid branch).";
 
                 }
                 else
                 {
                     validText = "Some checks failed, automatic fixes are available but they are all disabled.";
-                    if( !DevContext.IsWorkingFolderWritable() ) validText += " (And the working folder is not on a valid branch.)";
+                    if( !DevContext.GitManager.IsWorkingFolderWritable() ) validText += " (And the working folder is not on a valid branch.)";
                 }
                 _currentValidationContext = v;
                 _currentLoggedItems = loggedItems;
@@ -141,7 +141,7 @@ namespace CK.Releaser.Home
                 else 
                 {
                     validText = "No automatic fixes are available. Please read the errors below and correct manually";
-                    if( DevContext.IsWorkingFolderWritable() ) validText += '.';
+                    if( DevContext.GitManager.IsWorkingFolderWritable() ) validText += '.';
                     else validText += " after branching to a valid branch.";
                 }
             }
@@ -155,7 +155,7 @@ namespace CK.Releaser.Home
                 if( fw.ShowDialog( this ) == DialogResult.OK )
                 {
                     int enabledFixCount, disabledFixCount;
-                    bool success = _currentValidationContext.ApplyFixes( DevContext, out enabledFixCount, out disabledFixCount );
+                    bool success = _currentValidationContext.ApplyFixes( DevContext, fw.MemorizeDisabledFixes, out enabledFixCount, out disabledFixCount );
                     if( success )
                     {
                         if( enabledFixCount > 0 )

@@ -56,12 +56,13 @@ namespace CK.Releaser.Home
             this._fixList = new System.Windows.Forms.ListView();
             this._columnText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._columnMemoryKey = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this._doNotMemorizeDisabledFixes = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // _closeAndApply
             // 
-            this._closeAndApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this._closeAndApply.Location = new System.Drawing.Point(12, 386);
+            this._closeAndApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._closeAndApply.Location = new System.Drawing.Point(304, 386);
             this._closeAndApply.Name = "_closeAndApply";
             this._closeAndApply.Size = new System.Drawing.Size(147, 23);
             this._closeAndApply.TabIndex = 0;
@@ -108,6 +109,17 @@ namespace CK.Releaser.Home
             this._columnMemoryKey.Text = "MemoryKey (in Solution.ck)";
             this._columnMemoryKey.Width = 142;
             // 
+            // _doNotMemorizeDisabledFixes
+            // 
+            this._doNotMemorizeDisabledFixes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._doNotMemorizeDisabledFixes.AutoSize = true;
+            this._doNotMemorizeDisabledFixes.Location = new System.Drawing.Point(22, 386);
+            this._doNotMemorizeDisabledFixes.Name = "_doNotMemorizeDisabledFixes";
+            this._doNotMemorizeDisabledFixes.Size = new System.Drawing.Size(241, 17);
+            this._doNotMemorizeDisabledFixes.TabIndex = 3;
+            this._doNotMemorizeDisabledFixes.Text = "Do not memorize disabled fixes in Solution.ck.";
+            this._doNotMemorizeDisabledFixes.UseVisualStyleBackColor = true;
+            // 
             // FixWindow
             // 
             this.AcceptButton = this._closeAndApply;
@@ -115,12 +127,14 @@ namespace CK.Releaser.Home
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this._close;
             this.ClientSize = new System.Drawing.Size(544, 421);
+            this.Controls.Add(this._doNotMemorizeDisabledFixes);
             this.Controls.Add(this._fixList);
             this.Controls.Add(this._close);
             this.Controls.Add(this._closeAndApply);
             this.Name = "FixWindow";
             this.Text = "FixWindow";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -131,5 +145,6 @@ namespace CK.Releaser.Home
         private System.Windows.Forms.ListView _fixList;
         private System.Windows.Forms.ColumnHeader _columnText;
         private System.Windows.Forms.ColumnHeader _columnMemoryKey;
+        private System.Windows.Forms.CheckBox _doNotMemorizeDisabledFixes;
     }
 }

@@ -34,11 +34,11 @@ using System.Windows.Forms;
 
 namespace CK.Releaser
 {
-    public partial class SimpleModeVersionSetterForm : Form
+    public partial class MainVersionSetterForm : Form
     {
         readonly IInteractiveDevContext _ctx;
 
-        public SimpleModeVersionSetterForm( IInteractiveDevContext ctx )
+        public MainVersionSetterForm( IInteractiveDevContext ctx )
         {
             _ctx = ctx;
             Debug.Assert( ctx.Workspace.SolutionCKFile.VersioningModeSimple );
@@ -50,12 +50,26 @@ namespace CK.Releaser
         void OnSomethingChanged( object sender, EventArgs e )
         {
             var status = _ctx.ReleaseHead.Status;
-            //_versionEditorPanel.Version = status.MainVersion;
-            //_versionEditorPanel.PreRelease = status.PreReleaseVersion;
-            //_versionEditorPanel.BuildMetaData = status.BuildMetadataVersion;
-            //_versionEditorPanel.FromSourceEnabled = status.CanSetMainVersion;
-            //_versionEditorPanel.PreReleaseEnabled = status.CanSetPreReleaseVersion;
-            //_versionEditorPanel.BuildMetaDataEnabled = status.CanSetBuildMetadataVersion;
+            _major.Value = status.MainVersion.Major;
+            _minor.Value = status.MainVersion.Minor;
+            _patch.Value = status.MainVersion.Build;
+            string text;
+            if( status.ReleasedVersion.IsValid )
+            {
+                text = String.Format( "Current commit has been released with version {0}.", status.ReleasedVersion.ToStringWithoutBranchName() );
+            }
+            else
+            {
+                if( status.LastReleased == null )
+                {
+                    text = "There is no previous release.";
+                }
+                else
+                {
+                    text = String.Format( "A previous release '{0}' exists (committed at {1}).", status.LastReleased.Version.ToString(), status.LastReleased.CommitUtcTime.ToString( Info.InfoReleaseDatabase.TimeFormat ) );
+                }
+            }
+            _currentInfoLabel.Text = text;
         }
 
         private void _okButton_Click( object sender, EventArgs e )
@@ -63,7 +77,7 @@ namespace CK.Releaser
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
             _ctx.ReleaseHead.StatusChanged -= OnSomethingChanged;
-            _ctx.ReleaseHead.SetSimpleModeVersion( _versionEditorPanel.Version );
+            _ctx.ReleaseHead.SetSimpleModeVersion( new Version( (int)_major.Value, (int)_minor.Value, (int)_patch.Value ) );
         }
 
         private void _cancelButton_Click( object sender, EventArgs e )

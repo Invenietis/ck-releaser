@@ -52,7 +52,7 @@ namespace CK.Releaser.Fixes
         public override void Run( FixContext ctx )
         {
             string folderName = Project.SubDirectories.Last();
-            if( folderName != Project.ProjectFileName && folderName + "." + Project.TargetFrameworkVersionIdentifier != Project.ProjectFileName )
+            if( folderName != Project.ProjectFileName && folderName + "." + Project.SimplifiedTargetFrameworkMoniker != Project.ProjectFileName )
             {
                 var newPath = FileUtil.NormalizePathSeparator( Path.Combine( Path.GetDirectoryName( Project.ThisDirectoryPath ), Project.ProjectFileName ), true );
                 ctx.RenameFileOrFolder( Project.ThisDirectoryPath, newPath );

@@ -242,10 +242,13 @@ namespace CK.Releaser
                 {
                     foreach( var dups in _sameDirectoryProjects.GroupBy( p => p.Item1 ) )
                     {
-                        m.Error().Send( "Folder {0}: '{1}' can not be in the same folder as '{2}'.",
-                                            dups.Key.ThisDirectoryPath,
+                        if( !dups.Key.WorkspaceBasedPath.StartsWith( "Tests\\" ) )
+                        {
+                            m.Error().Send( "Folder {0}: '{1}' can not be in the same folder as '{2}'.",
+                                            dups.Key.WorkspaceBasedPath,
                                             String.Join( "', '", dups.Select( d => d.Item2.ProjectFileName ) ),
                                             dups.Key.ProjectFileName );
+                        }
                     }
                 }
                 if( !Directory.Exists( ReleasePath ) )

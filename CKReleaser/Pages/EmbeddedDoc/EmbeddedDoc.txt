@@ -17,10 +17,9 @@ Check points are:
 	- ProjectName can end with ".Net40" or ".Net45": this suffix is ignored by following rules.
 	- Assembly name must be the same as ProjectName.
 	- Projects that reference nunit.framework are Tests projects. 
-	- Projects that are contained in a Test project are SubTests projects.
 	- A Test project name must end with ".Tests".
-	- SubTests projects have no constraint for the the name of their folders.
-	- All other projects must be contained in a folder named with the ProjectName.
+	- Projects that are contained in a Test project OR are inside Tests/ folder but do not reference nunit.framework are SubTests projects.
+	- SubTests projects have no constraints.
 
 - Shared information among projects.
 	- The SharedKey.snk must exist at the root.
@@ -28,17 +27,17 @@ Check points are:
 	  (Tests projects are free to be signed or not.)
 	- A SharedAssemblyInfo.cs must exist at the root.
 	  It must contain global stuff such as Company, Copyright, etc.
-	- All Projects must have link to this file (typically in their Properties sub folder).
+	- All Projects except Tests and SubTests must have link to this file (typically in their Properties sub folder).
 	- The SharedAssemblyInfo.cs contains the company name, the copyright, the product name etc.
 	  In Simple Versioning mode (the only one as of today), the SharedAssemblyInfo.cs contains 
-	  the Version attribute: all projects will automatically use this solution level version.
+	  the Version attribute: all non-test projects will automatically use this solution level version.
 
 - Version information
 	- As of today, only "Simple Versioning Mode" is implemenented.
 	- The centralized version is in the SharedAssemblyInfo.cs file.
 	- The AssemblyVersionAttribute must be defined with three numbers: Major.Minor.Patch.
 	- The AssemblyFileVersionAttribute is useless and must be removed.
-	- The AssemblyInformationalVersionAttribute "%semver% - %githash%" and is filled by CK.Stamp.Fody.
+	- The AssemblyInformationalVersionAttribute "%ck-standard%" and is filled by CK.Stamp.Fody.
 
 - Misc
 	- There can not be more than one .csproj in a folder

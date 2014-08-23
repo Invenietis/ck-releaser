@@ -95,7 +95,7 @@ namespace CK.Releaser
         {
             Match v = ExtractVersionAttributes( source ).Item1;
             if( v == null ) throw new ArgumentException( "Source file must contain AssemblyAttribute.", "source" );
-            if( version.Build == -1 || version.Revision != -1 ) throw new ArgumentException( "Must be a Major.Minor.Patch version.", "version" );
+            if( !version.IsSemVerCompliant() ) throw new ArgumentException( "Must be a Major.Minor.Patch version.", "version" );
             var g =  v.Groups[2];
             return source.Remove( g.Index, g.Length ).Insert( g.Index, version.ToString( 3 ) );
         }
