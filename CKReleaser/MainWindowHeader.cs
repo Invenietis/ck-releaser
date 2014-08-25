@@ -39,6 +39,7 @@ namespace CK.Releaser
     {
         readonly string _infoCountFormat;
         readonly Color _normalBranchNameColor;
+        private  bool _internalChange;
 
         public MainWindowHeader()
         {
@@ -52,13 +53,28 @@ namespace CK.Releaser
         {
             base.Initialize( ctx );
             ctx.ReleaseHead.StatusChanged += ( o, e ) => OnStatusChanged();
+            _solutionFolderPath.TextChanged += ( o, e ) =>
+                {
+                    if( !_internalChange && System.IO.Directory.Exists( _solutionFolderPath.Text ) )
+                    {
+                        DevContext.Refresh( DevContext.MainMonitor, _solutionFolderPath.Text );
+                    }
+                };
             OnDevContextRefreshed();
         }
 
         protected override void OnDevContextRefreshed()
         {
             _infoCount.Text = String.Format( _infoCountFormat, DevContext.Workspace.CSProjects.Count, DevContext.Workspace.VSSolutions.Count );
-            _solutionFolderPath.Text = DevContext.Workspace.WorkspacePath;
+            try
+            {
+                _internalChange = true;
+                _solutionFolderPath.Text = DevContext.Workspace.WorkspacePath;
+            }
+            finally
+            {
+                _internalChange = false;
+            }
             OnStatusChanged();
         }
 

@@ -165,7 +165,6 @@ namespace CK.Releaser
             | System.Windows.Forms.AnchorStyles.Right)));
             this._solutionFolderPath.Location = new System.Drawing.Point(33, 14);
             this._solutionFolderPath.Name = "_solutionFolderPath";
-            this._solutionFolderPath.ReadOnly = true;
             this._solutionFolderPath.Size = new System.Drawing.Size(282, 20);
             this._solutionFolderPath.TabIndex = 5;
             // 
