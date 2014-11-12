@@ -40,7 +40,6 @@ namespace CK.Releaser.Info
     {
         readonly string _noDBString;
         InfoReleaseDatabase _currentDB;
-        TreeNode _bestSelectedNode;
 
         public InfoReleasePage()
         {
@@ -96,7 +95,6 @@ namespace CK.Releaser.Info
                 _currentDB = db;
             }
             var status = DevContext.ReleaseHead.Status;
-            //_currentHeadStatus.Text = status.StatusText;
         }
 
     }

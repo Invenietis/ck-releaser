@@ -58,8 +58,7 @@ namespace CK.Releaser.Info
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this._currentHeadStatus = new System.Windows.Forms.TextBox();
-            this._createCurrentBranch = new System.Windows.Forms.Button();
+            this._releaseTagBox = new System.Windows.Forms.GroupBox();
             this._currentBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -135,40 +134,26 @@ namespace CK.Releaser.Info
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // _currentHeadStatus
+            // _releaseTagBox
             // 
-            this._currentHeadStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._currentHeadStatus.BackColor = System.Drawing.SystemColors.Control;
-            this._currentHeadStatus.Location = new System.Drawing.Point(4, 57);
-            this._currentHeadStatus.Multiline = true;
-            this._currentHeadStatus.Name = "_currentHeadStatus";
-            this._currentHeadStatus.Size = new System.Drawing.Size(618, 50);
-            this._currentHeadStatus.TabIndex = 5;
-            // 
-            // _createCurrentBranch
-            // 
-            this._createCurrentBranch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this._createCurrentBranch.Location = new System.Drawing.Point(629, 71);
-            this._createCurrentBranch.Name = "_createCurrentBranch";
-            this._createCurrentBranch.Size = new System.Drawing.Size(118, 23);
-            this._createCurrentBranch.TabIndex = 6;
-            this._createCurrentBranch.Text = "Create branch";
-            this._createCurrentBranch.UseVisualStyleBackColor = true;
+            this._releaseTagBox.Location = new System.Drawing.Point(4, 58);
+            this._releaseTagBox.Name = "_releaseTagBox";
+            this._releaseTagBox.Size = new System.Drawing.Size(749, 58);
+            this._releaseTagBox.TabIndex = 1;
+            this._releaseTagBox.TabStop = false;
+            this._releaseTagBox.Text = "Release Tag";
             // 
             // InfoReleasePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this._createCurrentBranch);
-            this.Controls.Add(this._currentHeadStatus);
+            this.Controls.Add(this._releaseTagBox);
             this.Controls.Add(this._currentBox);
             this.Name = "InfoReleasePage";
             this.Size = new System.Drawing.Size(756, 439);
             this._currentBox.ResumeLayout(false);
             this._currentBox.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -181,7 +166,6 @@ namespace CK.Releaser.Info
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TextBox _currentHeadStatus;
-        private System.Windows.Forms.Button _createCurrentBranch;
+        private System.Windows.Forms.GroupBox _releaseTagBox;
     }
 }

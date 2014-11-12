@@ -74,7 +74,7 @@ namespace CK.Releaser
             }
             else
             {
-                return "The working folder is writable (and is already modified).";
+                return "The working folder is writable.";
             }
         }
 

@@ -105,7 +105,7 @@ namespace CK.Releaser
             Tuple<Match, Match, Match, CheckStatus> attr = ExtractVersionAttributes( source );
             Match mV = attr.Item1;
             Version v;
-            if( attr.Item4 == CheckStatus.Valid
+            if( attr.Item4 != CheckStatus.Valid
                 || mV == null
                 || !Version.TryParse( mV.Groups[2].Value, out v ) )
             {

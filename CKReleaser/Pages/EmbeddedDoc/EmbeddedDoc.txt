@@ -5,7 +5,13 @@ and this folder should be the working directory or be in a git repository workin
 this root folder at any time.
 The header also displays the count of solutions and projects file found and also:
 - the current Git branch name, marks with a * if the working folder is dirty.
-- the current Version in a button that allows the version to be set (see Versioning below).
+- the current Main Version - whether it is valid or not (and if not why) - in a button that allows the 
+  main version to be set (see Versioning below).
+
+== Important note
+
+CK-Releaser does not interact with remote repositories. This is by design and guaranty that it can not 
+mess up anything definitely. It only works on the local repository.
 
 == Home page
 
@@ -34,10 +40,21 @@ Check points are:
 
 - Version information
 	- As of today, only "Simple Versioning Mode" is implemenented.
-	- The centralized version is in the SharedAssemblyInfo.cs file.
+	- The centralized version (the main version) is in the SharedAssemblyInfo.cs file.
 	- The AssemblyVersionAttribute must be defined with three numbers: Major.Minor.Patch.
-	- The AssemblyFileVersionAttribute is useless and must be removed.
+	- The AssemblyFileVersionAttribute is useless and must be removed (CK.Stamp.Fody) does the job.
 	- The AssemblyInformationalVersionAttribute "%ck-standard%" and is filled by CK.Stamp.Fody.
+
+The SharedKey PublicKey appears below, this is the one to declare friend assemblies: 
+
+[assembly: InternalsVisibleTo( "CK.Setup.SqlServer.Tests, PublicKey = 002400000480000094000000060200000024000052534131000400000" + 
+                                                                      "10001002badda7c6774254194bd7d7b264aa7be4622e8a0105acfe1b" +
+                                                                      "2edc239b3389a317e008862dd5c62b61298042874b8bf08c4ad18a71" + 
+                                                                      "dcbae5234066d3f6ef159bc9f8014c89d5be68f4d5b59af4169f1578" + 
+                                                                      "4af3eb2fa02e312e480ea123f383c09bab56a016b46519cc830fa17b" +
+                                                                      "d6ccff7260cc8d20ece42745cef70b98e3c70d9" )]
+The PublicKeyToken is 731c291b31fb8d27.
+
 
 - Misc
 	- There can not be more than one .csproj in a folder
@@ -46,5 +63,18 @@ Check points are:
 	  Note: This is currently done only for the referenced assembly itself. Strong Naming its dependencies has to be done. 
 == Develop
 
-== == 
+== Versioning == 
+
+Our goal (like in many other projects) is to correctly manage versions. And this is not so simple to achieve.
+The play ground is:
+- Visual Studio and .Net: the AssemblyVersion, InformationalVersion, etc.
+- MSBuild: One can do a lot of things with tasks. Some do quite everything with MSBuild.
+- Git: Git is cool but there is no simple Revision Number we may use like in Svn.
+- NuGet: Packages have versions and this is today the most important one (if not the only one that actually matters).
+- Semantic Versioning: NuGet relies on it and it is a simple framework, yet powerful to work with versions.
+- Open Source projects: Anyone should be able to rebuild things.
+
+Each of these aspects bring opportunities but also constraints. And I want to add one more constraint: a developper
+should be able to easily produce a release without a CI server.
+
 
