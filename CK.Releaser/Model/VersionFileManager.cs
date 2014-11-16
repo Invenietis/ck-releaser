@@ -203,7 +203,7 @@ namespace CK.Releaser
                     bool ensureNeeded = false;
                     if( (s & VersionUtil.CheckStatus.BadOrMissingInformationalVersion) != 0 )
                     {
-                        m.Error().Send( "Missing InformationalVersion attribute in '{0}'.", WorkspaceBasedPath );
+                        m.Error().Send( "Bad or missing InformationalVersion attribute in '{0}' (must be '%ck-standard%').", WorkspaceBasedPath );
                         ensureNeeded = true;
                     }
                     if( (s & VersionUtil.CheckStatus.MissingVersion) != 0 )
