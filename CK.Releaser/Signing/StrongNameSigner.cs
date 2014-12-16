@@ -83,6 +83,35 @@ namespace CK.Releaser.Signing
             return DoApply( m, filePath );
         }
 
+        class Resolver : BaseAssemblyResolver
+        {
+
+            //public Resolver( string path )
+            //{
+
+            //}
+
+            public override AssemblyDefinition Resolve( AssemblyNameReference name )
+            {
+                return base.Resolve( name );
+            }
+
+            public override AssemblyDefinition Resolve( AssemblyNameReference name, ReaderParameters parameters )
+            {
+                return base.Resolve( name, parameters );
+            }
+
+            public override AssemblyDefinition Resolve( string fullName )
+            {
+                return base.Resolve( fullName );
+            }
+
+            public override AssemblyDefinition Resolve( string fullName, ReaderParameters parameters )
+            {
+                return base.Resolve( fullName, parameters );
+            }
+        }
+
         bool DoApply( IActivityMonitor m, string filePath )
         {
             using( m.OpenTrace().Send( "Strong Naming '{0}'.", filePath ) )
@@ -90,7 +119,7 @@ namespace CK.Releaser.Signing
                 TotalProcessedCount++;
                 try
                 {
-                    AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly( filePath );
+                    AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly( filePath, new ReaderParameters() { AssemblyResolver = new Resolver() } );
                     bool touched = false;
                     foreach( ModuleDefinition module in assembly.Modules )
                     {

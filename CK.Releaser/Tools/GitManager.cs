@@ -320,7 +320,7 @@ namespace CK.Releaser
                 }
                 return false;
             }
-            var repositoryStatus = _repository.Index.RetrieveStatus();
+            var repositoryStatus = _repository.RetrieveStatus();
             bool isDirty = repositoryStatus.Added.Any() 
                             || repositoryStatus.Missing.Any() 
                             || repositoryStatus.Modified.Any() 
