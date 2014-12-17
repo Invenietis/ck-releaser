@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CK.Core;
@@ -22,6 +23,11 @@ namespace CK.Releaser.Signing
         readonly string _pfxFilePath;
         readonly string _password;
         readonly StrongNameSigner _signer;
+
+        public ClickOnceSigner( string pfxFilePath, string password, StrongNameKeyPair privateKey )
+            : this( pfxFilePath, password, new StrongNameSigner( privateKey ) )
+        {
+        }
 
         public ClickOnceSigner( string pfxFilePath, string password, StrongNameSigner signer )
         {
@@ -51,6 +57,7 @@ namespace CK.Releaser.Signing
 
             public PublishedFolder( ClickOnceSigner signer, IActivityMonitor m, string path )
             {
+                _signer = signer;
                 _path = path;
                 _deployedFiles = new List<string>();
                 foreach( var f in Directory.EnumerateFiles( _path, "*", SearchOption.AllDirectories ) )
@@ -162,7 +169,6 @@ namespace CK.Releaser.Signing
                 }
             }
         }
-
 
         public bool ProcessPublishedDirectory( IActivityMonitor m, string publishedDirectory )
         {

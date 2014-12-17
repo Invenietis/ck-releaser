@@ -37,6 +37,7 @@ namespace CK.Releaser.HeaderUpdate
     [DisplayName( "Update License headers" )]
     partial class HeaderUpdatePage : ReleaserControl
     {
+        
         public HeaderUpdatePage()
         {
             InitializeComponent();
@@ -45,12 +46,24 @@ namespace CK.Releaser.HeaderUpdate
         public override void Initialize( IInteractiveDevContext ctx )
         {
             base.Initialize( ctx );
-            if( File.Exists( ctx.Workspace.WorkspacePath + "license.txt" ) )
+            string licHeaderFile = LicenseHeaderFilePah;
+            if( File.Exists( licHeaderFile ) )
             {
-                _text.Text = File.ReadAllText( ctx.Workspace.WorkspacePath + "license.txt" );
+                _text.Text = File.ReadAllText( licHeaderFile );
+                _createLicenseFileHeader.Visible = false;
+                _sourceLabel.Text = licHeaderFile;
             }
-            _text.Text = Tools.FileHeaderProcessor.DefaultLicenceText;
+            else
+            {
+                _text.Text = Tools.FileHeaderProcessor.DefaultLicenceText;
+                _saveLicenseHeaderFile.Visible = false;
+            }
             _selectedPath.Text = DevContext.Workspace.WorkspacePath;
+        }
+
+        private string LicenseHeaderFilePah
+        {
+            get { return DevContext.Workspace.WorkspacePath + "licenseFileHeader.txt"; }
         }
 
         void _choose_Click( object sender, EventArgs e )
@@ -86,6 +99,26 @@ namespace CK.Releaser.HeaderUpdate
                     UseWaitCursor = false;
                 }
             }
+        }
+
+        private void _createLicenseFileHeader_Click( object sender, EventArgs e )
+        {
+            File.WriteAllText( LicenseHeaderFilePah, _text.Text );
+            _sourceLabel.Text = LicenseHeaderFilePah;
+            _createLicenseFileHeader.Visible = false;
+            _saveLicenseHeaderFile.Visible = true;
+            _saveLicenseHeaderFile.Enabled = false;
+        }
+
+        private void _saveLicenseHeaderFile_Click( object sender, EventArgs e )
+        {
+            File.WriteAllText( LicenseHeaderFilePah, _text.Text );
+            _saveLicenseHeaderFile.Enabled = false;
+        }
+
+        private void _text_TextChanged( object sender, EventArgs e )
+        {
+            _saveLicenseHeaderFile.Enabled = true;
         }
     }
 }

@@ -58,13 +58,16 @@ namespace CK.Releaser.HeaderUpdate
             this._addNew = new System.Windows.Forms.CheckBox();
             this._removeExisting = new System.Windows.Forms.CheckBox();
             this._text = new System.Windows.Forms.TextBox();
+            this._sourceLabel = new System.Windows.Forms.Label();
+            this._createLicenseFileHeader = new System.Windows.Forms.Button();
+            this._saveLicenseHeaderFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 398);
+            this.label1.Location = new System.Drawing.Point(7, 384);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 13);
             this.label1.TabIndex = 18;
@@ -74,15 +77,15 @@ namespace CK.Releaser.HeaderUpdate
             // 
             this._selectedPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._selectedPath.Location = new System.Drawing.Point(96, 395);
+            this._selectedPath.Location = new System.Drawing.Point(96, 381);
             this._selectedPath.Name = "_selectedPath";
-            this._selectedPath.Size = new System.Drawing.Size(558, 20);
+            this._selectedPath.Size = new System.Drawing.Size(516, 20);
             this._selectedPath.TabIndex = 17;
             // 
             // _choose
             // 
             this._choose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this._choose.Location = new System.Drawing.Point(660, 393);
+            this._choose.Location = new System.Drawing.Point(618, 379);
             this._choose.Name = "_choose";
             this._choose.Size = new System.Drawing.Size(27, 22);
             this._choose.TabIndex = 15;
@@ -93,7 +96,7 @@ namespace CK.Releaser.HeaderUpdate
             // _process
             // 
             this._process.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this._process.Location = new System.Drawing.Point(584, 422);
+            this._process.Location = new System.Drawing.Point(542, 408);
             this._process.Name = "_process";
             this._process.Size = new System.Drawing.Size(103, 21);
             this._process.TabIndex = 16;
@@ -107,7 +110,7 @@ namespace CK.Releaser.HeaderUpdate
             this._addNew.AutoSize = true;
             this._addNew.Checked = true;
             this._addNew.CheckState = System.Windows.Forms.CheckState.Checked;
-            this._addNew.Location = new System.Drawing.Point(164, 424);
+            this._addNew.Location = new System.Drawing.Point(164, 410);
             this._addNew.Name = "_addNew";
             this._addNew.Size = new System.Drawing.Size(106, 17);
             this._addNew.TabIndex = 13;
@@ -120,7 +123,7 @@ namespace CK.Releaser.HeaderUpdate
             this._removeExisting.AutoSize = true;
             this._removeExisting.Checked = true;
             this._removeExisting.CheckState = System.Windows.Forms.CheckState.Checked;
-            this._removeExisting.Location = new System.Drawing.Point(11, 425);
+            this._removeExisting.Location = new System.Drawing.Point(11, 411);
             this._removeExisting.Name = "_removeExisting";
             this._removeExisting.Size = new System.Drawing.Size(147, 17);
             this._removeExisting.TabIndex = 14;
@@ -132,17 +135,51 @@ namespace CK.Releaser.HeaderUpdate
             this._text.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._text.Location = new System.Drawing.Point(3, 3);
+            this._text.Location = new System.Drawing.Point(3, 28);
             this._text.Multiline = true;
             this._text.Name = "_text";
             this._text.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this._text.Size = new System.Drawing.Size(685, 384);
+            this._text.Size = new System.Drawing.Size(643, 345);
             this._text.TabIndex = 12;
+            this._text.TextChanged += new System.EventHandler(this._text_TextChanged);
+            // 
+            // _sourceLabel
+            // 
+            this._sourceLabel.AutoSize = true;
+            this._sourceLabel.Location = new System.Drawing.Point(12, 8);
+            this._sourceLabel.Name = "_sourceLabel";
+            this._sourceLabel.Size = new System.Drawing.Size(213, 13);
+            this._sourceLabel.TabIndex = 19;
+            this._sourceLabel.Text = "This is the embedded default text resource. ";
+            // 
+            // _createLicenseFileHeader
+            // 
+            this._createLicenseFileHeader.Location = new System.Drawing.Point(232, 2);
+            this._createLicenseFileHeader.Name = "_createLicenseFileHeader";
+            this._createLicenseFileHeader.Size = new System.Drawing.Size(196, 23);
+            this._createLicenseFileHeader.TabIndex = 20;
+            this._createLicenseFileHeader.Text = "Create licenseFileHeader.txt";
+            this._createLicenseFileHeader.UseVisualStyleBackColor = true;
+            this._createLicenseFileHeader.Click += new System.EventHandler(this._createLicenseFileHeader_Click);
+            // 
+            // _saveLicenseHeaderFile
+            // 
+            this._saveLicenseHeaderFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._saveLicenseHeaderFile.Location = new System.Drawing.Point(514, 2);
+            this._saveLicenseHeaderFile.Name = "_saveLicenseHeaderFile";
+            this._saveLicenseHeaderFile.Size = new System.Drawing.Size(131, 23);
+            this._saveLicenseHeaderFile.TabIndex = 21;
+            this._saveLicenseHeaderFile.Text = "Save file";
+            this._saveLicenseHeaderFile.UseVisualStyleBackColor = true;
+            this._saveLicenseHeaderFile.Click += new System.EventHandler(this._saveLicenseHeaderFile_Click);
             // 
             // HeaderUpdatePage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this._saveLicenseHeaderFile);
+            this.Controls.Add(this._createLicenseFileHeader);
+            this.Controls.Add(this._sourceLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this._selectedPath);
             this.Controls.Add(this._choose);
@@ -151,7 +188,7 @@ namespace CK.Releaser.HeaderUpdate
             this.Controls.Add(this._removeExisting);
             this.Controls.Add(this._text);
             this.Name = "HeaderUpdatePage";
-            this.Size = new System.Drawing.Size(691, 455);
+            this.Size = new System.Drawing.Size(649, 441);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -166,5 +203,8 @@ namespace CK.Releaser.HeaderUpdate
         private System.Windows.Forms.CheckBox _addNew;
         private System.Windows.Forms.CheckBox _removeExisting;
         private System.Windows.Forms.TextBox _text;
+        private System.Windows.Forms.Label _sourceLabel;
+        private System.Windows.Forms.Button _createLicenseFileHeader;
+        private System.Windows.Forms.Button _saveLicenseHeaderFile;
     }
 }

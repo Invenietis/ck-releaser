@@ -44,6 +44,15 @@ namespace CK.Releaser.Signing
         readonly string _sharedPublicKeyString;
         readonly string _privatePublicKeyString;
 
+        /// <summary>
+        /// Initializes a new <see cref="StrongNameSigner"/> with the shared key <see cref="KnownStrongNames.SharedKey"/>.
+        /// </summary>
+        /// <param name="privateKey"></param>
+        public StrongNameSigner( StrongNameKeyPair privateKey )
+            : this( KnownStrongNames.SharedKey, privateKey )
+        {
+        }
+
         public StrongNameSigner( StrongNameKeyPair sharedKey, StrongNameKeyPair privateKey )
         {
             _sharedKey = sharedKey;

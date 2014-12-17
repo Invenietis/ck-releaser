@@ -12,7 +12,7 @@
     <AssemblyName>CK.Releaser</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>4ca2acde</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>6810a3cb</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
@@ -23,7 +23,7 @@
     <AssemblyOriginatorKeyFile>..\SharedKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DevContextReleaseStatus.cs" />

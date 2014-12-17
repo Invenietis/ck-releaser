@@ -116,7 +116,7 @@ namespace CK.Releaser.Signing
         {
             using( DevContext.MainMonitor.OpenTrace().Send( "Signing assemblies." ) )
             {
-                StrongNameSigner signer = new StrongNameSigner( Signing.KnownStrongNames.SharedKey, _privateKey );
+                StrongNameSigner signer = new StrongNameSigner( _privateKey );
                 try
                 {
                     UseWaitCursor = true;
