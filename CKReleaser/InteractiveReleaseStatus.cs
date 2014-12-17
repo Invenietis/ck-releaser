@@ -94,8 +94,8 @@ namespace CK.Releaser
         /// </summary>
         internal bool Refresh()
         {
-            var newOne = new DevContextReleaseStatus( _ctx.MainMonitor, _ctx );
-            if( newOne != _current )
+            var newOne = new DevContextReleaseStatus( _ctx );
+            if( _current == null || !_current.EqualsWithLog( newOne, _ctx.MainMonitor ) )
             {
                 _current = newOne;
                 var h = StatusChanged;

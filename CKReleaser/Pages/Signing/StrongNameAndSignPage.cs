@@ -114,33 +114,36 @@ namespace CK.Releaser.Signing
 
         private void _processStrongName_Click( object sender, EventArgs e )
         {
-            StrongNameSigner signer = new StrongNameSigner( Signing.KnownStrongNames.SharedKey, _privateKey );
-            try
+            using( DevContext.MainMonitor.OpenTrace().Send( "Signing assemblies." ) )
             {
-                UseWaitCursor = true;
-                _privateKeyDesc.Text = String.Format( "Setting official strong names." );
-                _privateKeyDesc2.Text = String.Empty;
-                _privateKeyDesc.Refresh();
-                _privateKeyDesc2.Refresh();
-                foreach( var f in _allOutputs.Items.Cast<ListViewItem>().Where( item => item.Checked ).Select( item => item.Tag ).Cast<ExeAndDllFiles.File>() )
+                StrongNameSigner signer = new StrongNameSigner( Signing.KnownStrongNames.SharedKey, _privateKey );
+                try
                 {
-                    string p = Path.Combine( DevContext.Workspace.WorkspacePath, f.SolutionFilePath );
-                    signer.ProcessFile( DevContext.MainMonitor, p );
-                    _privateKeyDesc.Text = String.Format( "{0} processed ({1} failed), {2} modified.", signer.TotalProcessedCount, signer.FailureCount, signer.ModifiedCount );
-                    _privateKeyDesc2.Text = String.Format( "{0} signed, {1} reference(s) and {2} InternalsVisible updated.", signer.AssemblySignedCount, signer.ReferencesUpdatedCount, signer.InternalsVisibleToCount );
+                    UseWaitCursor = true;
+                    _privateKeyDesc.Text = String.Format( "Setting official strong names." );
+                    _privateKeyDesc2.Text = String.Empty;
                     _privateKeyDesc.Refresh();
                     _privateKeyDesc2.Refresh();
+                    foreach( var f in _allOutputs.Items.Cast<ListViewItem>().Where( item => item.Checked ).Select( item => item.Tag ).Cast<ExeAndDllFiles.File>() )
+                    {
+                        string p = Path.Combine( DevContext.Workspace.WorkspacePath, f.SolutionFilePath );
+                        signer.ProcessFile( DevContext.MainMonitor, p );
+                        _privateKeyDesc.Text = String.Format( "{0} processed ({1} failed), {2} modified.", signer.TotalProcessedCount, signer.FailureCount, signer.ModifiedCount );
+                        _privateKeyDesc2.Text = String.Format( "{0} signed, {1} reference(s) and {2} InternalsVisible updated.", signer.AssemblySignedCount, signer.ReferencesUpdatedCount, signer.InternalsVisibleToCount );
+                        _privateKeyDesc.Refresh();
+                        _privateKeyDesc2.Refresh();
+                    }
+                    _privateKeyDesc.Text = String.Format( "Finished: {0} processed ({1} failed), {2} modified.", signer.TotalProcessedCount, signer.FailureCount, signer.ModifiedCount );
                 }
-                _privateKeyDesc.Text = String.Format( "Finished: {0} processed ({1} failed), {2} modified.", signer.TotalProcessedCount, signer.FailureCount, signer.ModifiedCount );
-            }
-            catch( Exception ex )
-            {
-                ActivityMonitor.CriticalErrorCollector.Add( ex, "While signing." );
-                _privateKeyDesc.Text = String.Format( "Unexpected error: {0}", ex.Message );
-            }
-            finally
-            {
-                UseWaitCursor = false;
+                catch( Exception ex )
+                {
+                    DevContext.MainMonitor.Fatal().Send( ex );
+                    _privateKeyDesc.Text = String.Format( "Unexpected error: {0}", ex.Message );
+                }
+                finally
+                {
+                    UseWaitCursor = false;
+                }
             }
         }
     

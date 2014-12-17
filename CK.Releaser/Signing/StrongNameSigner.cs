@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -85,31 +86,20 @@ namespace CK.Releaser.Signing
 
         class Resolver : BaseAssemblyResolver
         {
+            readonly IActivityMonitor _monitor;
 
-            //public Resolver( string path )
-            //{
-
-            //}
-
+            public Resolver( string path, IActivityMonitor m )
+            {
+                _monitor = m;
+                AddSearchDirectory( Path.GetDirectoryName( path ) );
+            }
+           
             public override AssemblyDefinition Resolve( AssemblyNameReference name )
             {
+                _monitor.Trace().Send( "Resolving {0}.", name.FullName );
                 return base.Resolve( name );
             }
 
-            public override AssemblyDefinition Resolve( AssemblyNameReference name, ReaderParameters parameters )
-            {
-                return base.Resolve( name, parameters );
-            }
-
-            public override AssemblyDefinition Resolve( string fullName )
-            {
-                return base.Resolve( fullName );
-            }
-
-            public override AssemblyDefinition Resolve( string fullName, ReaderParameters parameters )
-            {
-                return base.Resolve( fullName, parameters );
-            }
         }
 
         bool DoApply( IActivityMonitor m, string filePath )
@@ -119,7 +109,7 @@ namespace CK.Releaser.Signing
                 TotalProcessedCount++;
                 try
                 {
-                    AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly( filePath, new ReaderParameters() { AssemblyResolver = new Resolver() } );
+                    AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly( filePath, new ReaderParameters() { AssemblyResolver = new Resolver( filePath, m ) } );
                     bool touched = false;
                     foreach( ModuleDefinition module in assembly.Modules )
                     {
@@ -169,7 +159,7 @@ namespace CK.Releaser.Signing
                     if( assembly.Name.HasPublicKey && assembly.Name.PublicKey.SequenceEqual( _sharedPublicKey ) )
                     {
                         AssemblySignedCount++;
-                        m.Info().Send( "{0} itself is strong named.", assembly.Name.Name );
+                        m.Info().Send( "Setting private key on {0}.", assembly.Name.Name );
                         touched = true;
                         StrongName( assembly, _privateKey );
                     }
@@ -179,7 +169,7 @@ namespace CK.Releaser.Signing
                         m.Info().Send( "Saving modified file." );
                         assembly.Write( filePath, new WriterParameters { StrongNameKeyPair = _privateKey } );
                     }
-                    else m.Info().Send( "No modification required." );
+                    else m.CloseGroup( "No modification required." );
                     return true;
                 }
                 catch( Exception ex )

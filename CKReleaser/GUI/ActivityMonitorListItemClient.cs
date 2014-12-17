@@ -37,8 +37,13 @@ namespace CK.Releaser
         Stack<ListViewGroup> _current;
         ListViewGroup _noGroup;
 
+        /// <summary>
+        /// Initializes a new ActivityMonitorListItemClient that will cacth logs in ListViewItems.
+        /// Its Filter is Debug (the actual filter is guaranted to be debug on the monitor whenever this client is registered in a monitor).
+        /// </summary>
         public ActivityMonitorListItemClient()
         {
+            Filter = LogFilter.Debug;
             _groups = new Dictionary<string, ListViewGroup>();
             _noGroup = new ListViewGroup( "Logs", "" );
             _current = new Stack<ListViewGroup>();

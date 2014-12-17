@@ -100,52 +100,55 @@ namespace CK.Releaser.Home
 
         void RunValidation()
         {
-            var m = new ActivityMonitor();
-            var loggedItems = new ActivityMonitorListItemClient();
-            m.Output.RegisterClient( loggedItems );
-                        
-            ValidationContext v = new ValidationContext( m );
-            bool isValid = DevContext.Initialize( v );
-            ClearLogs( true );
-            var otherLogs = loggedItems.AddAndReset( _logs );
-            string validText = String.Empty;
-            if( v.Fixes.Count > 0 )
+            var loggedItems = DevContext.MainMonitor.Output.RegisterClient( new ActivityMonitorListItemClient() );
+            try
             {
-                _openFixes.Visible = true;
-                int enabledCount = v.Fixes.Count( f => !f.IsDisabled );
-                if( enabledCount > 0 )
+                ValidationContext v = new ValidationContext( DevContext.MainMonitor );
+                bool isValid = DevContext.Initialize( v );
+                ClearLogs( true );
+                var otherLogs = loggedItems.AddAndReset( _logs );
+                string validText = String.Empty;
+                if( v.Fixes.Count > 0 )
                 {
-                    validText = String.Format( "Some checks failed. {0} automatic fix(es) are available", enabledCount );
-                    if( DevContext.GitManager.IsWorkingFolderWritable() ) validText += '.';
-                    else validText += " but working folder is not writable (not on a valid branch).";
-
+                    _openFixes.Visible = true;
+                    int enabledCount = v.Fixes.Count( f => !f.IsDisabled );
+                    if( enabledCount > 0 )
+                    {
+                        validText = String.Format( "Some checks failed. {0} automatic fix(es) are available", enabledCount );
+                        if( DevContext.GitManager.IsWorkingFolderWritable() ) validText += '.';
+                        else validText += " but working folder is not writable (not on a valid branch).";
+                    }
+                    else
+                    {
+                        validText = "Some checks failed, automatic fixes are available but they are all disabled.";
+                        if( !DevContext.GitManager.IsWorkingFolderWritable() ) validText += " (And the working folder is not on a valid branch.)";
+                    }
+                    _currentValidationContext = v;
+                    _currentLoggedItems = loggedItems;
+                    _openFixes.Text = String.Format( _openFixesFormat, v.Fixes.Count );
                 }
                 else
                 {
-                    validText = "Some checks failed, automatic fixes are available but they are all disabled.";
-                    if( !DevContext.GitManager.IsWorkingFolderWritable() ) validText += " (And the working folder is not on a valid branch.)";
+                    _openFixes.Visible = false;
+                    _currentValidationContext = null;
+                    _currentLoggedItems = null;
+                    if( isValid )
+                    {
+                        validText = "All checks passed.";
+                    }
+                    else
+                    {
+                        validText = "No automatic fixes are available. Please read the errors below and correct manually";
+                        if( DevContext.GitManager.IsWorkingFolderWritable() ) validText += '.';
+                        else validText += " after branching to a valid branch.";
+                    }
                 }
-                _currentValidationContext = v;
-                _currentLoggedItems = loggedItems;
-                _openFixes.Text = String.Format( _openFixesFormat, v.Fixes.Count );
+                _validationSummary.Text = validText;
             }
-            else
+            finally
             {
-                _openFixes.Visible = false;
-                _currentValidationContext = null;
-                _currentLoggedItems = null;
-                if( isValid )
-                {
-                    validText = "All checks passed.";
-                }
-                else 
-                {
-                    validText = "No automatic fixes are available. Please read the errors below and correct manually";
-                    if( DevContext.GitManager.IsWorkingFolderWritable() ) validText += '.';
-                    else validText += " after branching to a valid branch.";
-                }
+                DevContext.MainMonitor.Output.UnregisterClient( loggedItems );
             }
-            _validationSummary.Text = validText; 
         }
 
         private void _openFixes_Click( object sender, EventArgs e )

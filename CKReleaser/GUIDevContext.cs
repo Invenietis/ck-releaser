@@ -61,7 +61,13 @@ namespace CK.Releaser
 
         void OnAppIdle( object sender, EventArgs e )
         {
-            if( _autoRefreshOnDirty && IsDirty ) Refresh( _mainMonitor );
+            if( _autoRefreshOnDirty && IsDirty )
+            {
+                using( _mainMonitor.OpenTrace().Send( "OnAppIddle: dirty refreshing." ) )
+                {
+                    Refresh( _mainMonitor );
+                }
+            }
             else
             {
                 if( GitManager != null && GitManager.RefreshCachedInfo( _mainMonitor ) )

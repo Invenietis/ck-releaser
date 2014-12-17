@@ -103,12 +103,11 @@ namespace CK.Releaser
             MainVersion = new Version( 0, 1, 0 );
         }
 
-        public DevContextReleaseStatus( IActivityMonitor monitor, IDevContext ctx )
+        public DevContextReleaseStatus( IDevContext ctx )
         {
             MainVersion = ctx.Workspace.MainVersion;
             if( MainVersion == null ) 
             {
-                monitor.Warn().Send( "Missing Main Version. Defaults to 1.0.1." );
                 MainVersion = new Version( 0, 1, 0 );
             }
             GitManager git = ctx.GitManager;
@@ -117,7 +116,6 @@ namespace CK.Releaser
             if( BranchName == null )
             {
                 VersionStatus = MainVersionStatus.Valid;
-                monitor.Warn().Send( "Missing or uninitialized Git repository." );
             }
             else
             {
@@ -134,13 +132,11 @@ namespace CK.Releaser
                     else if( git.ReleasedVersion.BranchName != BranchName )
                     {
                         ReleasedTagDifferentBranchError = true;
-                        monitor.Fatal().Send( "Invalid Release Tag: Branch is '{0}' but released tag is '{1}'.", BranchName, git.ReleasedVersion );
                     }
                     // Check the version.
                     if( !git.IsDirty && !git.ReleasedVersion.Equals( MainVersion ) )
                     {
                         VersionStatus = MainVersionStatus.FatalMismatchWithReleasedTag;
-                        monitor.Fatal().Send( "Invalid Release Tag: source version is {0} but released tag is '{1}'.", MainVersion, git.ReleasedVersion );
                     }
                     else
                     {
@@ -149,7 +145,6 @@ namespace CK.Releaser
                         // the current source version has not been upgraded.
                         if( git.IsDirty && git.ReleasedVersion.CompareTo( MainVersion ) >= 0 )
                         {
-                            monitor.Warn().Send( "Current version '{0}' should be increased above '{1}'.", MainVersion, ReleasedVersion.ToStringWithoutBranchName() );
                             VersionStatus = MainVersionStatus.VersionMustBeUpgraded;
                         }
                         else VersionStatus = MainVersionStatus.Valid;
@@ -160,7 +155,6 @@ namespace CK.Releaser
                     // No current Released tag.
                     if( LastReleased != null && LastReleased.Version.CompareTo( MainVersion ) >= 0 )
                     {
-                        monitor.Warn().Send( "Current version '{0}' must be greater than the last one '{1}'.", MainVersion, LastReleased.Version );
                         VersionStatus = MainVersionStatus.TooSmallVersionFromLastReleased;
                     }
                     else
@@ -186,6 +180,64 @@ namespace CK.Releaser
                     && VersionStatus == x.VersionStatus
                     && ReleasedTagDifferentBranchError == x.ReleasedTagDifferentBranchError
                     && CanCreateReleaseTag == x.CanCreateReleaseTag;
+        }
+
+        public bool EqualsWithLog( DevContextReleaseStatus x, IActivityMonitor m )
+        {
+            if( x == null ) throw new ArgumentNullException();
+            if( m == null ) throw new ArgumentNullException();
+            bool equals = true;
+            if( BranchName != x.BranchName )
+            {
+                m.Info().Send( "Branch differs: '{0}' => '{1}.", BranchName, x.BranchName );
+                equals = false;
+            }
+            if( CommitSha != x.CommitSha )
+            {
+                m.Info().Send( "CommitSha differs: '{0}' => '{1}.", CommitSha, x.CommitSha );
+                equals = false;
+            }
+            if( CommitUtcTime != x.CommitUtcTime )
+            {
+                m.Info().Send( "CommitUtcTime differs: '{0}' => '{1}.", CommitUtcTime, x.CommitUtcTime );
+                equals = false;
+            }
+            if( ReleasedVersion != x.ReleasedVersion )
+            {
+                m.Info().Send( "ReleasedVersion differs: '{0}' => '{1}.", ReleasedVersion, x.ReleasedVersion );
+                equals = false;
+            }
+            if( LastReleased != x.LastReleased )
+            {
+                m.Info().Send( "LastReleased differs: '{0}' => '{1}.", LastReleased, x.LastReleased );
+                equals = false;
+            }
+            if( MainVersion != x.MainVersion )
+            {
+                m.Info().Send( "MainVersion differs: '{0}' => '{1}.", MainVersion, x.MainVersion );
+                equals = false;
+            }
+            if( CanSetMainVersion != x.CanSetMainVersion )
+            {
+                m.Info().Send( "CanSetMainVersion differs: '{0}' => '{1}.", CanSetMainVersion, x.CanSetMainVersion );
+                equals = false;
+            }
+            if( VersionStatus != x.VersionStatus )
+            {
+                m.Info().Send( "VersionStatus differs: '{0}' => '{1}.", VersionStatus, x.VersionStatus );
+                equals = false;
+            }
+            if( ReleasedTagDifferentBranchError != x.ReleasedTagDifferentBranchError )
+            {
+                m.Info().Send( "ReleasedTagDifferentBranchError differs: '{0}' => '{1}.", ReleasedTagDifferentBranchError, x.ReleasedTagDifferentBranchError );
+                equals = false;
+            }
+            if( CanCreateReleaseTag != x.CanCreateReleaseTag )
+            {
+                m.Info().Send( "CanCreateReleaseTag differs: '{0}' => '{1}.", CanCreateReleaseTag, x.CanCreateReleaseTag );
+                equals = false;
+            }
+            return equals;
         }
 
         public override bool Equals( object obj )
