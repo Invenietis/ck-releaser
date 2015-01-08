@@ -58,29 +58,6 @@ namespace CK.Releaser
             get { return _current; }
         }
 
-        ///// <summary>
-        ///// Create the information for the current branch.
-        ///// Status.CanCreateCurrentBranch must be true otherwise an <see cref="InvalidOperationException"/> is thrown.
-        ///// </summary>
-        ///// <returns>The created <see cref="BranchRelease"/> object.</returns>
-        //public Info.BranchRelease CreateCurrentBranch()
-        //{
-        //    if( !_current.CanCreateCurrentBranch ) throw new InvalidOperationException( "Status.CanCreateCurrentBranch must not be false." );
-        //    Debug.Assert( _current.BranchName != null && _ctx.InfoReleaseDatabase != null );
-        //    _ctx.InfoReleaseDatabase.EnsureBranch( _ctx.MainMonitor, _ctx.Workspace.SolutionCKFile.SolutionName, _current.BranchName );
-        //    Refresh();
-        //    return _current.CurrentBranch;
-        //}
-
-        //public bool ReadyToReleaseCurrent( string actor )
-        //{
-        //    if( String.IsNullOrEmpty( actor ) ) throw new ArgumentNullException( "actor" );
-        //    if( !_current.CanReadyToReleaseCurrent ) throw new InvalidOperationException( "Status.CanReadyToReleaseCurrent must not be false." );
-        //    bool success = _current.CurrentBranch.ReadyToReleaseCurrent( _ctx.MainMonitor, _current.MainVersion, _current.CommitSha, _current.CommitUtcTime, actor );
-        //    Refresh();
-        //    return success;
-        //}
-
         public void SetSimpleModeVersion( Version v )
         {
             if( !Status.CanSetMainVersion ) throw new InvalidOperationException();

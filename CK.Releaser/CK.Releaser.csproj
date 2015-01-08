@@ -12,7 +12,7 @@
     <AssemblyName>CK.Releaser</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>6810a3cb</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>ad451950</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
@@ -142,9 +142,9 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.20.0.0\lib\net40\NativeBin
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.0.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.0.0\build\net40\LibGit2Sharp.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.26.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.2\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.26.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.4\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\packages\Fody.1.26.2\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.2\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.26.4\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.4\build\Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

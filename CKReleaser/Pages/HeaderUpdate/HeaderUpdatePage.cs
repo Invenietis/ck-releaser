@@ -37,24 +37,39 @@ namespace CK.Releaser.HeaderUpdate
     [DisplayName( "Update License headers" )]
     partial class HeaderUpdatePage : ReleaserControl
     {
+        readonly string _sourceLabelTextSaved;
         
         public HeaderUpdatePage()
         {
             InitializeComponent();
+            _sourceLabelTextSaved = _sourceLabel.Text;
         }
 
         public override void Initialize( IInteractiveDevContext ctx )
         {
             base.Initialize( ctx );
+            Display();
+        }
+
+        protected override void OnDevContextRefreshed()
+        {
+            Display();
+        }
+
+        void Display()
+        {
             string licHeaderFile = LicenseHeaderFilePah;
             if( File.Exists( licHeaderFile ) )
             {
                 _text.Text = File.ReadAllText( licHeaderFile );
                 _createLicenseFileHeader.Visible = false;
                 _sourceLabel.Text = licHeaderFile;
+                _saveLicenseHeaderFile.Visible = true;
             }
             else
             {
+                _createLicenseFileHeader.Visible = true;
+                _sourceLabel.Text = _sourceLabelTextSaved;
                 _text.Text = Tools.FileHeaderProcessor.DefaultLicenceText;
                 _saveLicenseHeaderFile.Visible = false;
             }
